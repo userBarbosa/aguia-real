@@ -1,15 +1,24 @@
 {
-  "name": "template-api-nodejs",
-  "version": "1.0.0",
-  "description": "",
+  "name": "aguia-real",
+  "version": "0.0.1",
+  "description": "Scheduling system for pet shops and veterinary clinics.",
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server.js",
     "start:dev": "ts-node-dev ./src/server.ts",
     "build": "tsc"
   },
-  "author": "Rafael Vilarinho",
-  "license": "GNU",
+  "author": "Marcos Barbosa <marcos.barbosa@fatec.sp.gov.br>",
+  "contributors": [
+    "Ana Alves <ana.alves41@fatec.sp.gov.br>",
+    "Viktor Ferrer <viktor.ferrer@fatec.sp.gov.br>"
+  ],
+  "template": {
+    "author": "Rafael Vilarinho",
+    "license": "GNU",
+    "name": "template-api-nodejs",
+    "repository": "github:/rafaelvilarinho/template-api-nodejs"
+  },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
     "axios": "^0.25.0",

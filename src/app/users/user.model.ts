@@ -1,8 +1,7 @@
-
 import logger from '../../utils/logger';
 import { createHash, validateHash } from '../../utils/crypt';
-import { list, read, readByEmail, remove, store, update, updatePassword, updateType } from './users.repository';
-import { SigninUserResponse, User, UserDTO, UserType } from './users.types';
+import { list, read, readByEmail, remove, store, update, updatePassword, updateType } from './user.repository';
+import { SigninUserResponse, User, UserDTO, UserType } from './user.types';
 import { createToken } from '../../utils/token';
 import { TokenUserPayload } from '../../utils/token/types';
 

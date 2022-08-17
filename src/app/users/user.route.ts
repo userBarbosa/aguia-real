@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { validateTokenMiddleware } from '../../utils/token'
-import { createUserRoute, getAllUsersRoute, getUserByIdRoute, removeUserRoute, signinUserRoute, updateUserPasswordRoute, updateUserRoute, updateUserTypeRoute } from './users.controller'
+import { createUserRoute, getAllUsersRoute, getUserByIdRoute, removeUserRoute, signinUserRoute, updateUserPasswordRoute, updateUserRoute, updateUserTypeRoute } from './user.controller'
 
 const userRouter = Router()
 const basePath = '/users'
