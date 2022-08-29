@@ -2,7 +2,7 @@ import cors from 'cors';
 import express, { json, urlencoded } from "express"
 import userRouter from '../../app/users/user.route';
 import appointmentRouter from '../../app/appointments/appointment.route';
-import tasksRouter from '../tasks/tasks.route'
+import tasksRouter from '../../app/tasks/tasks.route'
 import { environment } from '../../config/environment';
 import logger from '../logger';
 
