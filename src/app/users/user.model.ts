@@ -21,11 +21,14 @@ export async function getUserById(id: string): Promise<User | null> {
 
 export async function signinUser(email: string, password: string): Promise<SigninUserResponse | null> {
   try {
+    // procura o user no banco pelo email
     const existingUser = await readByEmail({email})
-
+    // se existe
     if (existingUser) {
-      const validation = await validateHash(password, existingUser.password)
-
+      // valida se a senha dele esta correta
+      const validation = await validateHash(password, existingUser.password) 
+      
+      // validation sera string ou null
       if (validation) {
         const tokenUserPayload: TokenUserPayload = {
           id: existingUser._id,
@@ -35,7 +38,7 @@ export async function signinUser(email: string, password: string): Promise<Signi
         }
         const token = await createToken(tokenUserPayload)
 
-        return { 
+        return {  
           ...tokenUserPayload,
           token
         }
@@ -79,6 +82,7 @@ export async function updateUser(data: {
   name: string,
 }): Promise<boolean> {
   try {  
+    // solicitante tem permissão?
     return await update(data)
   } catch (error) {
     logger.error('Error updating user', error)

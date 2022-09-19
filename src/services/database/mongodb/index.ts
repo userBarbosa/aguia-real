@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb'
+import { Db, MongoClient, ObjectId } from 'mongodb'
 import { environment } from '../../../config/environment'
 import logger from '../../../utils/logger'
 
@@ -7,7 +7,7 @@ export type IndexType = ObjectId
 const mongoDbUri = environment.MONGODB_URI
 const mongoDbClient = new MongoClient(mongoDbUri)
 
-export async function findAll<T>(collection: string, query: Record<string, unknown>, options?: Record<string, unknown>): Promise<T[]> {
+export async function findAll<T extends Document>(collection: string, query: Record<string, unknown>, options?: Record<string, unknown>): Promise<T[]> {
   try {
     await mongoDbClient.connect()
 
@@ -27,6 +27,25 @@ export async function findAll<T>(collection: string, query: Record<string, unkno
 
   return []
 }
+
+/*
+Database
+  -> collections
+    -> documents
+
+    users -> 
+
+    todos os "souzas" - out -> exporta para uma nova collection
+
+database: petshop-baratinha-producao
+collection: users
+document: Viktor
+
+test
+
+use petshop-baratinha-producao
+db.users.find({user: "Viktor"})
+*/
 
 export async function findOne<T>(collection: string, query: Record<string, unknown>, options?: Record<string, unknown>): Promise<T | null> {
   try {

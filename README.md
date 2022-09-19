@@ -7,3 +7,15 @@ Analise e Desenvolvimento de Sistemas - Faculdade de Tecnologia da Zona Leste
 - Ana Barbosa Alves - R.A.:  
 - Marcos Filipe Ribeiro Barbosa - R.A.: 1110481923042  
 - Viktor Bartosz Ferrer R.A.: 1110482013006  
+
+
+usuario
+|  route
+|  controller
+|  model 
+|  repository -> conecta com o banco
+sistema
+
+
+npm install
+npm run start:dev

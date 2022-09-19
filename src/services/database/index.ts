@@ -1,6 +1,9 @@
 import { ObjectId } from 'mongodb'
 import { findAll, findOne, insert, remove, update } from './mongodb'
 
+const whichDB = process.env.database
+
+// source -> collection do mongo, ou tabela no sql, para onde o dado vai/sai
 export async function selectAll<T>(source: string, query: Record<string, unknown>): Promise<T[]> {
   return await findAll<T>(source, query)
 }
@@ -13,6 +16,7 @@ export async function select<T>(source: string, data: any): Promise<T | null> {
   return await findOne<T>(source, data)
 }
 
+// fallback, caracterisca que impede que a applicação quebre pensando no fluxo de erros durante o desenvolvimento
 export async function insertOne(source: string, content: Record<string, unknown>): Promise<string | null> {
   return await insert(source, content)
 }
