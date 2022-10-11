@@ -1,11 +1,11 @@
 <p align="center">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/userBarbosa/arara-azul?color=%2304D361">
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/userBarbosa/arara-azul">
-  <a href="https://github.com/userBarbosa/arara-azul/commits/main">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/userBarbosa/arara-azul">
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/userBarbosa/aguia-real?color=%2304D361">
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/userBarbosa/aguia-real">
+  <a href="https://github.com/userBarbosa/aguia-real/commits/main">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/userBarbosa/aguia-real">
   </a>
-   <a href="https://github.com/userBarbosa/arara-azul/stargazers">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/userBarbosa/arara-azul?style=social">
+   <a href="https://github.com/userBarbosa/aguia-real/stargazers">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/userBarbosa/aguia-real?style=social">
   </a>
 </p>
 
@@ -86,6 +86,6 @@ As seguintes tecnologias e ferramentas foram usadas na construção do projeto:
 ---
 
 ## 👨‍💻 Contribuidores
-<a href="https://github.com/userBarbosa/arara-azul/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=userBarbosa/arara-azul" />
+<a href="https://github.com/userBarbosa/aguia-real/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=userBarbosa/aguia-real" />
 </a>
