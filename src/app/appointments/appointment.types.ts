@@ -1,14 +1,14 @@
 import { GenericDTO } from '../../services/database/mongodb/types';
 
 export type Appointment = {
-  id: string;
+  id?: string;
   patiendId: string;
   ownerId: string;
   employeeId: string;
-  observation: string;
   appointmentState: AppointmentState;
-  payment: Payment;
-  value: number;
+  observation?: string;
+  payment?: Payment;
+  value?: number;
 };
 
 export type AppointmentDTO = {
@@ -16,8 +16,8 @@ export type AppointmentDTO = {
   patiendId: string;
   ownerId: string;
   employeeId: string;
-  appointmentState: string;
-};
+  appointmentState: AppointmentState;
+} & GenericDTO;
 
 export type Payment = {
   installments: number;

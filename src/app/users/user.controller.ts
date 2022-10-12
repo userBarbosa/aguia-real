@@ -8,7 +8,7 @@ export async function getAllUsersRoute(req: Request, res: Response) {
   try {
     const userList = await getAllUsers()
 
-    SuccessResponse(res, userList) 
+    SuccessResponse(res, userList)
   } catch (error) {
     logger.error('Error getting all users', error)
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
@@ -25,11 +25,11 @@ export async function getUserByIdRoute(req: Request, res: Response) {
       const user = await getUserById(id)
 
       if (user) {
-        SuccessResponse(res, user) 
+        SuccessResponse(res, user)
       } else {
         ErrorResponse(res, ErrorType.NotFound, { msg: "Usuário não encontrado" })
       }
-  
+
     }
   } catch (error) {
     logger.error('Error getting an user', error)
@@ -48,9 +48,9 @@ export async function signinUserRoute(req: Request, res: Response) {
 
       if (user) {
         if (user.id) {
-          SuccessResponse(res, { user }) 
+          SuccessResponse(res, { user })
         } else {
-          ErrorResponse(res, ErrorType.Forbidden, {msg: "Credenciais incorretas"})
+          ErrorResponse(res, ErrorType.Forbidden, { msg: "Credenciais incorretas" })
         }
       } else {
         ErrorResponse(res, ErrorType.InternalServerError)
@@ -78,9 +78,11 @@ export async function createUserRoute(req: Request, res: Response) {
 
       if (id) {
         if (id !== "existing") {
-          SuccessResponse(res, { id }) 
+          SuccessResponse(res, { id })
         } else {
-          ErrorResponse(res, ErrorType.Forbidden, {msg: "Usuário já existe"})
+          const error = { user: id }
+          logger.error('Error creating an user', error)
+          ErrorResponse(res, ErrorType.Forbidden, error)
         }
       } else {
         ErrorResponse(res, ErrorType.InternalServerError)
@@ -100,12 +102,12 @@ export async function updateUserRoute(req: Request, res: Response) {
     if (!name) {
       ErrorResponse(res, ErrorType.BadRequest)
     } else {
-      const ok = await updateUser({id: user.id, name})
+      const ok = await updateUser({ id: user.id, name })
 
       if (ok) {
         SuccessResponse(res, true)
       } else {
-        ErrorResponse(res, ErrorType.InternalServerError, {msg: "Ocorreu um erro durante a atualização do usuário"})
+        ErrorResponse(res, ErrorType.InternalServerError, { msg: "Ocorreu um erro durante a atualização do usuário" })
       }
     }
   } catch (error) {
@@ -122,7 +124,7 @@ export async function updateUserTypeRoute(req: Request, res: Response) {
     if (!type) {
       ErrorResponse(res, ErrorType.BadRequest)
     } else {
-      const ok = await updateUserType({id: user.id, type})
+      const ok = await updateUserType({ id: user.id, type })
 
       if (ok) {
         SuccessResponse(res, true)
@@ -144,7 +146,7 @@ export async function updateUserPasswordRoute(req: Request, res: Response) {
     if (!password) {
       ErrorResponse(res, ErrorType.BadRequest)
     } else {
-      const ok = await updateUserPassword({id: user.id, password})
+      const ok = await updateUserPassword({ id: user.id, password })
 
       if (ok) {
         SuccessResponse(res, true)
@@ -165,7 +167,7 @@ export async function removeUserRoute(req: Request, res: Response) {
     if (!user.id) {
       ErrorResponse(res, ErrorType.BadRequest)
     } else {
-      const ok = await removeUser({id: user.id})
+      const ok = await removeUser({ id: user.id })
 
       if (ok) {
         SuccessResponse(res, true)

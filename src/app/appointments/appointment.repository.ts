@@ -25,7 +25,3 @@ export async function read(data: { id: string }): Promise<AppointmentDTO | null>
   }
   return null
 }
-
-export async function getAppointmentByIdRoute(req: Request, res: Response) { }
-
-export async function getAppointmentByUserRoute(req: Request, res: Response) { }

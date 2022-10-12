@@ -2,10 +2,27 @@ import { Request, Response } from 'express';
 import logger from '../../utils/logger';
 import { ErrorResponse, ErrorType, SuccessResponse } from '../../utils/response';
 import { RequestWithToken } from '../../utils/token/types';
-import { createAppointment } from './appointment.model';
+import { createAppointment, getAppointmentById } from './appointment.model';
 
 export async function getAppointmentByIdRoute(req: Request, res: Response) {
-  SuccessResponse(res, 200);
+  try {
+    const { id } = req.params
+
+    if (!id) {
+      ErrorResponse(res, ErrorType.BadRequest)
+    } else {
+      const appointment = await getAppointmentById({id});
+      
+      if (appointment) {
+        SuccessResponse(res, appointment)
+      } else {
+        ErrorResponse(res, ErrorType.NotFound, { msg: "Agendamento não encontrado" })
+      }
+    }
+  } catch (error) {
+    logger.error('Error getting an appintment', error)
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
+  }
 }
 
 export async function getAllAppointmentsRoute(req: Request, res: Response) {
