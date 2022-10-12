@@ -1,5 +1,5 @@
 import { insertOne, removeOne, select, selectAll, selectById, updateOne } from '../../services/database'
-import { Appointment, AppointmentDTO } from "./appointment.types"
+import { Appointment, AppointmentDTO } from './appointment.types'
 import logger from '../../utils/logger'
 
 const DATASOURCE = "appointments"

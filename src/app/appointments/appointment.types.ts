@@ -1,4 +1,4 @@
-import { GenericDTO } from "../../services/database/mongodb/types";
+import { GenericDTO } from '../../services/database/mongodb/types';
 
 export type Appointment = {
   id: string;

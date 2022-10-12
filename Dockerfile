@@ -11,6 +11,6 @@ COPY ./dist /usr/src/dist
 
 RUN npm install
 
-EXPOSE 8002
+EXPOSE 3001
 
 CMD npm run start
