@@ -3,11 +3,11 @@ import { insertOne, removeOne, select, selectAll, selectById, updateOne } from '
 import logger from '../../utils/logger'
 import { UserDTO, UserType } from './user.types'
 
-const DATASOURCE = "users"
+const COLLECTION = "users"
 
 export async function list(): Promise<UserDTO[]> {
   try {
-    const response = await selectAll<UserDTO>(DATASOURCE, {})
+    const response = await selectAll<UserDTO>(COLLECTION, {})
 
     return response
   } catch (error) {
@@ -19,7 +19,7 @@ export async function list(): Promise<UserDTO[]> {
 
 export async function read(data: { id: string }): Promise<UserDTO | null> {
   try {
-    const response = await selectById<UserDTO>(DATASOURCE, data.id)
+    const response = await selectById<UserDTO>(COLLECTION, data.id)
 
     return response
   } catch (error) {
@@ -31,7 +31,7 @@ export async function read(data: { id: string }): Promise<UserDTO | null> {
 
 export async function readByEmail(data: { email: string }): Promise<UserDTO | null> {
   try {
-    const response = await select<UserDTO>(DATASOURCE, data)
+    const response = await select<UserDTO>(COLLECTION, data)
 
     return response
   } catch (error) {
@@ -48,7 +48,7 @@ export async function store(data: {
   type: UserType,
 }): Promise<string | null> {
   try {
-    const response = await insertOne(DATASOURCE, {
+    const response = await insertOne(COLLECTION, {
       name: data.name,
       email: data.email,
       password: data.password,
@@ -70,7 +70,7 @@ export async function update(data: {
   name: string,
 }): Promise<boolean> {
   try {
-    const response = await updateOne(DATASOURCE, { _id: new ObjectId(data.id) }, {
+    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
       name: data.name,
       updatedAt: new Date()
     })
@@ -88,7 +88,7 @@ export async function updateType(data: {
   type: UserType
 }): Promise<boolean> {
   try {
-    const response = await updateOne(DATASOURCE, { _id: new ObjectId(data.id) }, {
+    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
       type: data.type,
       updatedAt: new Date(),
     })
@@ -106,7 +106,7 @@ export async function updatePassword(data: {
   password: string,
 }): Promise<boolean> {
   try {
-    const response = await updateOne(DATASOURCE, { _id: new ObjectId(data.id) }, {
+    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
       password: data.password,
       updatedAt: new Date(),
     })
@@ -121,7 +121,7 @@ export async function updatePassword(data: {
 
 export async function block(data: { id: string }): Promise<boolean> {
   try {
-    const response = await updateOne(DATASOURCE, { _id: new ObjectId(data.id) }, {
+    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
       active: 0,
       deletedAt: new Date(),
     })
@@ -136,7 +136,7 @@ export async function block(data: { id: string }): Promise<boolean> {
 
 export async function remove(data: { id: string }): Promise<boolean> {
   try {
-    const response = await removeOne(DATASOURCE, { _id: new ObjectId(data.id) })
+    const response = await removeOne(COLLECTION, { _id: new ObjectId(data.id) })
 
     return response
   } catch (error) {

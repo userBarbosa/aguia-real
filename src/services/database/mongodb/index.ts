@@ -28,6 +28,28 @@ export async function findAll<T>(collection: string, query: Record<string, unkno
   return []
 }
 
+export async function findWithLimit<T>(collection: string, query: Record<string, unknown>, limit: number, options?: Record<string, unknown>): Promise<T[]> {
+  try {
+    await mongoDbClient.connect()
+
+    const cursor = await mongoDbClient
+      .db(environment.MONGODB_DATABASE)
+      .collection(collection)
+      .find<T>(query, options)
+      .limit(limit)
+
+    const data = await cursor.toArray()
+
+    return data
+  } catch (error) {
+    logger.error('', error)
+  } finally {
+    mongoDbClient.close()
+  }
+
+  return []
+}
+
 export async function findOne<T>(collection: string, query: Record<string, unknown>, options?: Record<string, unknown>): Promise<T | null> {
   try {
     await mongoDbClient.connect()
