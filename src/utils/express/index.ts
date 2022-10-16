@@ -2,7 +2,7 @@ import cors from 'cors';
 import express, { json, urlencoded } from 'express'
 import userRouter from '../../app/users/user.route';
 import appointmentRouter from '../../app/appointments/appointment.route';
-import tasksRouter from '../../app/tasks/tasks.route'
+import utilitiesRouter from '../../app/utilities/utility.route'
 import { environment } from '../../config/environment';
 import logger from '../logger';
 import swaggerUi from 'swagger-ui-express';
@@ -20,7 +20,7 @@ export default function startServer() {
   
   app.use('/', userRouter)
   app.use('/', appointmentRouter)
-  app.use('/', tasksRouter)
+  app.use('/', utilitiesRouter)
   
   app.listen(environment.PORT, () => logger.info(`Running on server via ${environment.PORT} port`));
 }

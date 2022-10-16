@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import logger from '../../utils/logger';
 import { ErrorResponse, ErrorType, SuccessResponse } from '../../utils/response';
 import { RequestWithToken } from '../../utils/token/types';
-import { createAppointment, getAppointmentById } from './appointment.model';
+import { createAppointment, getAppointmentById, getAllAppointments } from './appointment.model';
 
 export async function getAppointmentByIdRoute(req: Request, res: Response) {
   try {
@@ -11,7 +11,7 @@ export async function getAppointmentByIdRoute(req: Request, res: Response) {
     if (!id) {
       ErrorResponse(res, ErrorType.BadRequest)
     } else {
-      const appointment = await getAppointmentById({id});
+      const appointment = await getAppointmentById(id);
       
       if (appointment) {
         SuccessResponse(res, appointment)
@@ -20,13 +20,22 @@ export async function getAppointmentByIdRoute(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error('Error getting an appintment', error)
+    logger.error('Error getting an appointment', error)
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
   }
 }
 
 export async function getAllAppointmentsRoute(req: Request, res: Response) {
-  SuccessResponse(res, 200);
+  try {
+    const limit = req.query ? Number(req.query.limit) : 50;
+    const list = await getAllAppointments({}, limit);
+    // if (list.length > 0) {
+      SuccessResponse(res, list);
+    // }
+  } catch (error) {
+    logger.error('Error getting appointment list', error)
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
+  }
 }
 
 export async function getNextAppointmentRoute(req: Request, res: Response) {
