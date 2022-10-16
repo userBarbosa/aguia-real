@@ -1,68 +1,98 @@
-import { insertOne, removeOne, select, selectAll, selectById, selectWithLimit, updateOne } from '../../services/database'
-import { Appointment, AppointmentDTO } from './appointment.types'
-import logger from '../../utils/logger'
+import {
+  insertOne,
+  select,
+  selectAll,
+  selectById,
+  selectWithLimit,
+} from "../../services/database/index";
+import {
+  AppointmentDTO,
+  AppointmentState,
+  Diagnostic,
+  PaymentMethod,
+  Reason,
+} from "./appointment.types";
+import logger from "../../utils/logger";
+import { ObjectId } from "mongodb";
 
-const COLLECTION = "appointments"
+const COLLECTION = "appointments";
 
 export async function list(): Promise<AppointmentDTO[]> {
   try {
-    const response = await selectAll<AppointmentDTO>(COLLECTION, {})
+    const response = await selectAll<AppointmentDTO>(COLLECTION, {});
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting all appointments', error)
+    logger.error("Error getting all appointments", error);
   }
-  return []
+  return [];
 }
 
-export async function listLimit(query: any, limit: number): Promise<AppointmentDTO[]> {
+export async function listLimit(
+  query: any,
+  limit: number
+): Promise<AppointmentDTO[]> {
   try {
-    const response = await selectWithLimit<AppointmentDTO>(COLLECTION, query, limit)
+    const response = await selectWithLimit<AppointmentDTO>(
+      COLLECTION,
+      query,
+      limit
+    );
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting all appointments', error)
+    logger.error("Error getting all appointments", error);
   }
-  return []
+  return [];
 }
 
 export async function read(id: string): Promise<AppointmentDTO | null> {
   try {
-    const response = await selectById<AppointmentDTO>(COLLECTION, id)
+    const response = await selectById<AppointmentDTO>(COLLECTION, id);
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting appointment by id', error)
+    logger.error("Error getting appointment by id", error);
   }
-  return null
+  return null;
 }
 
-export async function readByForeignId(field: string, id: string): Promise<AppointmentDTO | null> {
+export async function readByForeignId(
+  field: string,
+  id: string
+): Promise<AppointmentDTO | null> {
   try {
     let data: { [key: string]: string } = {};
     data[field] = id;
 
-    const response = await select<AppointmentDTO>(COLLECTION, data)
+    const response = await select<AppointmentDTO>(COLLECTION, data);
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting appointment by id', error)
+    logger.error("Error getting appointment by id", error);
   }
-  return null
+  return null;
 }
 
-export async function searchAppointment(patientId: string, employeeId: string, timeDate: Date, appointmentTime?: number): Promise<boolean> {
+export async function searchAppointment(
+  patientId: string,
+  employeeId: string,
+  timeDate: Date,
+  appointmentTime?: number
+): Promise<boolean> {
   try {
-    const gteDate = timeDate.toISOString()
-    const ltDate = new Date(timeDate.getTime() + (appointmentTime || 30 * 60 * 1000)).toISOString()
+    const gteDate = timeDate.toISOString();
+    const ltDate = new Date(
+      timeDate.getTime() + (appointmentTime || 30 * 60 * 1000)
+    ).toISOString();
     const data = {
       patientId: patientId,
       employeeId: employeeId,
       date: {
         $gte: gteDate,
-        $lt: ltDate
-      }
-    }
+        $lt: ltDate,
+      },
+    };
 
     const result = await select<AppointmentDTO>(COLLECTION, data);
 
@@ -70,13 +100,44 @@ export async function searchAppointment(patientId: string, employeeId: string, t
       return true;
     }
   } catch (error) {
-    logger.error('error finding reserved appointment', error)
+    logger.error("error finding reserved appointment", error);
   }
   return false;
 }
 
-export async function store(data: {id: string, patiendId: string, ownerId: string, employeeId: string}): Promise<string | null> {
-  return null;
+export async function store(data: {
+  patiendId: string;
+  ownerId: string;
+  diagnostic: Diagnostic;
+  employeeId: string;
+  appointmentState: AppointmentState;
+  observation: string;
+  paymentMethod: PaymentMethod;
+  reason: Reason;
+  value: number;
+  date: Date;
+}): Promise<string | null> {
+  try {
+    const response = await insertOne(COLLECTION, {
+      patiendId: new ObjectId(data.patiendId),
+      ownerId: new ObjectId(data.ownerId),
+      employeeId: new ObjectId(data.employeeId),
+      observation: data.observation,
+      value: data.value,
+      diagnostic: data.diagnostic,
+      appointmentState: data.appointmentState,
+      paymentMethod: data.paymentMethod,
+      reason: data.reason,
+      date: data.date,
+      createdAt: new Date(),
+    });
+    
+    return response;
+  } catch (error) {
+    logger.error('error while storing data', error, data)
+    // should throw ?
+    return null;
+  }
 }
 
 // interface simpleObject {

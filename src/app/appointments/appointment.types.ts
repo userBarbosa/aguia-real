@@ -14,14 +14,17 @@ export type Appointment = {
   date: Date;
 };
 
-// "de-para" é um enum no typescript, e seu data type é 'type' / objeto
-
 export type AppointmentDTO = {
-  id: string;
   patiendId: string;
   ownerId: string;
+  diagnostic: Diagnostic;
   employeeId: string;
   appointmentState: AppointmentState;
+  observation: string;
+  paymentMethod: PaymentMethod;
+  reason: Reason;
+  value: number;
+  date: Date;
 } & GenericDTO;
 
 export type Payment = {
@@ -29,6 +32,20 @@ export type Payment = {
   monthlyInstallments: number;
   firstInstallmentDate: string | Date;
   lastInstallmentsDate: string | Date;
+};
+
+export type Diagnostic = {
+  exam: string;
+  result: string;
+  doctorSign: string;
+  exameFullfilled: boolean;
+  medicinePrescription: Array<MedicinePrescription>;
+};
+
+export type MedicinePrescription = {
+  medicine: string;
+  dose: string;
+  period: number;
 };
 
 export enum AppointmentState {
@@ -40,14 +57,6 @@ export enum AppointmentState {
   paid = 32,
   deleted = 64,
 }
-
-export type Diagnostic = {
-  exam: string;
-  result: string;
-  doctorSign: string;
-  exameFullfilled: boolean;
-  medicinePrescription: Array<MedicinePrescription>;
-};
 
 export enum PaymentMethod {
   creditCard = 1,
@@ -63,9 +72,3 @@ export enum Reason {
   labExam = 8,
   surgery = 16,
 }
-
-export type MedicinePrescription = {
-  medicine: string;
-  dose: string;
-  period: number;
-};

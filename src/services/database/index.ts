@@ -1,5 +1,12 @@
-import { ObjectId } from 'mongodb'
-import { findAll, findWithLimit, findOne, insert, remove, update } from './mongodb'
+import { ObjectId } from "mongodb";
+import {
+  findAll,
+  findWithLimit,
+  findOne,
+  insert,
+  remove,
+  update,
+} from "./mongodb";
 
 export async function selectAll<T>(
   source: string,
@@ -13,12 +20,14 @@ export async function selectById<T>(
   id: string
 ): Promise<T | null> {
   return await findOne<T>(source, { _id: new ObjectId(id) });
-export async function selectWithLimit<T>(source: string, query: Record<string, unknown>, limit: number): Promise<T[]> {
-  return await findWithLimit<T>(source, query, limit)
 }
 
-export async function selectById<T>(source: string, id: string): Promise<T | null> {
-  return await findOne<T>(source, { _id: new ObjectId(id) })
+export async function selectWithLimit<T>(
+  source: string,
+  query: Record<string, unknown>,
+  limit: number
+): Promise<T[]> {
+  return await findWithLimit<T>(source, query, limit);
 }
 
 export async function select<T>(source: string, data: any): Promise<T | null> {
