@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, Document } from "mongodb";
 import {
   findAll,
   findWithLimit,
@@ -8,7 +8,7 @@ import {
   update,
 } from "./mongodb";
 
-export async function selectAll<T>(
+export async function selectAll<T extends Document>(
   source: string,
   query: Record<string, unknown>
 ): Promise<T[]> {
@@ -22,7 +22,7 @@ export async function selectById<T>(
   return await findOne<T>(source, { _id: new ObjectId(id) });
 }
 
-export async function selectWithLimit<T>(
+export async function selectWithLimit<T extends Document>(
   source: string,
   query: Record<string, unknown>,
   limit: number

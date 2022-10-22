@@ -1,3 +1,3 @@
-import startServer from '../src/utils/express';
+import startServer from "../src/utils/express";
 
 startServer();

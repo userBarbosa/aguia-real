@@ -21,19 +21,19 @@ export type User = {
   name: string,
   email: string,
   type: UserType,
-  password: string,
-  phoneNumber: string,
-  documentNumber: string,
-  medicalLicense: string,
-  specialty: Specialty,
-  active: boolean,
-  birthDate: Date,
+  password?: string,
+  phoneNumber?: string,
+  documentNumber?: string,
+  medicalLicense?: string,
+  specialty?: Specialty,
+  active?: boolean,
+  birthDate?: Date,
 };
 
 export enum UserType {
   ADMIN='admin',
-  AUX='aux',
-  COMMON='common'
+  DOCTOR='doctor',
+  ASSISTANT='assistant'
 };
 
 export enum Specialty {

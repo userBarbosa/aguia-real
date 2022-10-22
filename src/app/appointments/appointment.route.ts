@@ -21,7 +21,7 @@ appointmentRouter.get(`${basePath}/field`, validateTokenMiddleware, getAppointme
 appointmentRouter.get(`${basePath}/singleid`, validateTokenMiddleware, getAppointmentsBySingleIdRoute)
 appointmentRouter.get(`${basePath}/daterange`, validateTokenMiddleware, getAppointmentsInDateRangeRoute)
 
-appointmentRouter.post(`${basePath}/`, validateTokenMiddleware, createAppointmentRoute)
+appointmentRouter.post(`${basePath}/new`, validateTokenMiddleware, createAppointmentRoute)
 
 appointmentRouter.patch(`${basePath}/:id/state`, validateTokenMiddleware, updateAppointmentStateRoute)
 appointmentRouter.patch(`${basePath}/:id/observation`, validateTokenMiddleware, updateAppointmentObservationRoute)

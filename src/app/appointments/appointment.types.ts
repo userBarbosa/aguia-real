@@ -2,7 +2,7 @@ import { GenericDTO } from "../../services/database/mongodb/types";
 
 export type Appointment = {
   id?: string;
-  patiendId: string;
+  patientId: string;
   ownerId: string;
   diagnostic: Diagnostic;
   employeeId: string;
@@ -15,7 +15,7 @@ export type Appointment = {
 };
 
 export type AppointmentDTO = {
-  patiendId: string;
+  patientId: string;
   ownerId: string;
   diagnostic: Diagnostic;
   employeeId: string;

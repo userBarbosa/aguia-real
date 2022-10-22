@@ -81,13 +81,13 @@ export async function searchAppointment(
   appointmentTime?: number
 ): Promise<boolean> {
   try {
-    const gteDate = timeDate.toISOString();
+    const gteDate = timeDate;
     const ltDate = new Date(
       timeDate.getTime() + (appointmentTime || 30 * 60 * 1000)
-    ).toISOString();
+    );
     const data = {
-      patientId: patientId,
-      employeeId: employeeId,
+      patientId: new ObjectId(patientId),
+      employeeId: new ObjectId(employeeId),
       date: {
         $gte: gteDate,
         $lt: ltDate,
@@ -106,7 +106,7 @@ export async function searchAppointment(
 }
 
 export async function store(data: {
-  patiendId: string;
+  patientId: string;
   ownerId: string;
   diagnostic: Diagnostic;
   employeeId: string;
@@ -119,7 +119,7 @@ export async function store(data: {
 }): Promise<string | null> {
   try {
     const response = await insertOne(COLLECTION, {
-      patiendId: new ObjectId(data.patiendId),
+      patientId: new ObjectId(data.patientId),
       ownerId: new ObjectId(data.ownerId),
       employeeId: new ObjectId(data.employeeId),
       observation: data.observation,
@@ -131,12 +131,16 @@ export async function store(data: {
       date: data.date,
       createdAt: new Date(),
     });
-    
+
     return response;
   } catch (error) {
-    logger.error('error while storing data', error, data)
+    logger.error("error while storing data", { error, data });
     // should throw ?
-    return null;
+    throw {
+      message: "error while storing data",
+      error,
+      data,
+    };
   }
 }
 

@@ -72,7 +72,7 @@ export async function getAppointmentsInDateRangeRoute(
 export async function createAppointmentRoute(req: Request, res: Response) {
   try {
     const {
-      patiendId,
+      patientId,
       ownerId,
       diagnostic,
       employeeId,
@@ -81,10 +81,10 @@ export async function createAppointmentRoute(req: Request, res: Response) {
       reason,
       value,
       observation,
-      date,
     } = req.body;
+    let { date } = req.body;
     if (
-      !patiendId ||
+      !patientId ||
       !ownerId ||
       !diagnostic ||
       !employeeId ||
@@ -93,10 +93,11 @@ export async function createAppointmentRoute(req: Request, res: Response) {
       !reason ||
       !date
     ) {
-      ErrorResponse(res, ErrorType.BadRequest);
+      ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
     } else {
+      date = new Date(date);
       const id = await createAppointment({
-        patiendId,
+        patientId,
         ownerId,
         diagnostic,
         employeeId,

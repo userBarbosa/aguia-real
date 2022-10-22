@@ -70,7 +70,7 @@ export async function getAppointmentsInDateRange(query: {
   return null;
 }
 export async function createAppointment(data: {
-  patiendId: string;
+  patientId: string;
   ownerId: string;
   diagnostic: Diagnostic;
   employeeId: string;
@@ -82,15 +82,19 @@ export async function createAppointment(data: {
   date: Date;
 }): Promise<string | null> {
   const scheduleIsReserved = await isReserved(
-    data.patiendId,
+    data.patientId,
     data.employeeId,
     data.date
   );
   if (!scheduleIsReserved) {
-    const response = await store({
-      ...data,
-    });
-    return response;
+    try {
+      const response = await store({
+        ...data,
+      });
+      return response;
+    } catch (error) {
+      throw error
+    }
   }
   return "already reserved";
 }
@@ -122,7 +126,7 @@ export async function isReserved(
 
 function makeAppointmentResponse(appointment: AppointmentDTO): Appointment {
   return {
-    patiendId: appointment.patiendId,
+    patientId: appointment.patientId,
     ownerId: appointment.ownerId,
     diagnostic: appointment.diagnostic,
     employeeId: appointment.employeeId,
