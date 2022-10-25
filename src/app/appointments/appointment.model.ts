@@ -2,6 +2,7 @@ import {
   read,
   listLimit,
   readByForeignId,
+  readByField,
   searchAppointment,
   store,
 } from "./appointment.repository";
@@ -33,34 +34,43 @@ export async function getAllAppointments(
   return makeAppointmentListResponse(appointments);
 }
 
-export async function getNextAppointment(
-  field: string,
-  id: string
-): Promise<Appointment | null> {
-  const appointment = await readByForeignId(field, id);
+// export async function getNextAppointment(
+//   field: string,
+//   id: string
+// ): Promise<Appointment | null> {
+//   const appointment = await readByForeignId(field, id);
 
-  if (appointment) {
-    return makeAppointmentResponse(appointment);
-  }
-  return null;
-}
+//   if (appointment) {
+//     return makeAppointmentResponse(appointment);
+//   }
+//   return null;
+// }
 
 export async function getAppointmentsByField(
-  field: string,
-  data: string
+  data: string | number | boolean,
+  field: string
 ): Promise<Appointment[] | null> {
-  const query = {};
-  const appointments = await listLimit(query, 50);
+  const appointments = await readByField(data, field, 50);
+
   if (appointments) {
     return makeAppointmentListResponse(appointments);
   }
   return null;
 }
-export async function getAppointmentsBySingleId(query: {
-  field: string;
-  data: string;
-}): Promise<Appointment[] | null> {
-  return null;
+export async function getAppointmentsByForeignId(
+  field: string,
+  id: string
+): Promise<Appointment[] | null> {
+  try {
+    const appointments = await readByForeignId(field, id, 50);
+
+    if (appointments) {
+      return makeAppointmentListResponse(appointments);
+    }
+    return null;
+  } catch (error) {
+    throw error;
+  }
 }
 export async function getAppointmentsInDateRange(query: {
   field: string;
@@ -93,7 +103,7 @@ export async function createAppointment(data: {
       });
       return response;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
   return "already reserved";
@@ -121,7 +131,12 @@ export async function isReserved(
   timeDate: Date,
   appointmentTime?: number
 ): Promise<boolean> {
-  return await searchAppointment(patientId, employeeId, timeDate);
+  return await searchAppointment(
+    patientId,
+    employeeId,
+    timeDate,
+    appointmentTime
+  );
 }
 
 function makeAppointmentResponse(appointment: AppointmentDTO): Appointment {

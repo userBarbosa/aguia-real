@@ -68,7 +68,7 @@ export async function findOne<T>(
   try {
     await mongoDbClient.connect();
 
-    const data = mongoDbClient
+    const data = await mongoDbClient
       .db(mongoDataBase)
       .collection(collection)
       .findOne<T>(query, options);

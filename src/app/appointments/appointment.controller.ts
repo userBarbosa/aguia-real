@@ -9,6 +9,8 @@ import {
   createAppointment,
   getAppointmentById,
   getAllAppointments,
+  getAppointmentsByField,
+  getAppointmentsByForeignId,
 } from "./appointment.model";
 
 export async function getAppointmentByIdRoute(req: Request, res: Response) {
@@ -47,19 +49,70 @@ export async function getAllAppointmentsRoute(req: Request, res: Response) {
   }
 }
 
-export async function getNextAppointmentRoute(req: Request, res: Response) {
-  SuccessResponse(res, 200);
+function translateData(data: string): number | string | boolean {
+  if (data === "true" || data === "false") {
+    return Boolean(data);
+  } else if (!data.match(/\D/) && parseInt(data)) {
+    return parseInt(data);
+  } else {
+    return data;
+  }
 }
-
 export async function getAppointmentsByFieldRoute(req: Request, res: Response) {
-  SuccessResponse(res, 200);
+  try {
+    let { data, field } = req.query;
+
+    if (!data || !field) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      field = String(field);
+      data = String(data);
+
+      const translatedData = translateData(data);
+
+      const appointment = await getAppointmentsByField(translatedData, field);
+
+      if (appointment) {
+        SuccessResponse(res, appointment);
+      } else {
+        ErrorResponse(res, ErrorType.NotFound, {
+          msg: "Agendamento não encontrado",
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("Error getting an appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
 
-export async function getAppointmentsBySingleIdRoute(
+export async function getAppointmentsByForeignIdRoute(
   req: Request,
   res: Response
 ) {
-  SuccessResponse(res, 200);
+  try {
+    let { id, field } = req.query;
+
+    if (!id || !field) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      id = String(id);
+      field = String(field);
+      const appointment = await getAppointmentsByForeignId(id, field);
+
+      if (appointment) {
+        SuccessResponse(res, appointment);
+      } else {
+        ErrorResponse(res, ErrorType.NotFound, {
+          msg: "Agendamento não encontrado",
+        });
+      }
+    }
+  } catch (error: unknown) {
+    // if (error instanceof Error && error.stack) { }
+    logger.error("Error getting an appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
 
 export async function getAppointmentsInDateRangeRoute(

@@ -4,7 +4,7 @@ import {
   getAppointmentByIdRoute,
   getAllAppointmentsRoute,
   getAppointmentsByFieldRoute,
-  getAppointmentsBySingleIdRoute,
+  getAppointmentsByForeignIdRoute,
   getAppointmentsInDateRangeRoute,
   createAppointmentRoute,
   updateAppointmentStateRoute,
@@ -15,11 +15,11 @@ import {
 const appointmentRouter = Router()
 const basePath = '/appointments'
 
-appointmentRouter.get(`${basePath}/:id`, validateTokenMiddleware, getAppointmentByIdRoute)
 appointmentRouter.get(`${basePath}/all`, validateTokenMiddleware, getAllAppointmentsRoute)
 appointmentRouter.get(`${basePath}/field`, validateTokenMiddleware, getAppointmentsByFieldRoute)
-appointmentRouter.get(`${basePath}/singleid`, validateTokenMiddleware, getAppointmentsBySingleIdRoute)
+appointmentRouter.get(`${basePath}/foreignid`, validateTokenMiddleware, getAppointmentsByForeignIdRoute)
 appointmentRouter.get(`${basePath}/daterange`, validateTokenMiddleware, getAppointmentsInDateRangeRoute)
+appointmentRouter.get(`${basePath}/:id`, validateTokenMiddleware, getAppointmentByIdRoute)
 
 appointmentRouter.post(`${basePath}/new`, validateTokenMiddleware, createAppointmentRoute)
 
