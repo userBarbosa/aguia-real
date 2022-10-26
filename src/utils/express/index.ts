@@ -7,7 +7,8 @@ import { environment } from '../../config/environment';
 import logger from '../logger';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../../utils/documentation/swagger';
-import jsonDoc from '../documentation/swagger-output.json'
+// import jsonDoc from '../documentation/swagger-output.json'
+let jsonDoc: null = null;
 
 export default function startServer() {
   const app = express()
