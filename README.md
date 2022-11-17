@@ -27,21 +27,20 @@
 
 ## 💻 Sobre o projeto
 
-🐶 Pets Health - é um projeto de conclusão de curso, no qual consiste em um sistema para gerência de clínica veterinária.
+🐶 Pets Health - é um projeto de conclusão de curso, no qual consiste em um sistema para agendamentos de consultas para clínicas veterinárias.
 
 O Projeto foi realizado durante o ano de 2022 sob orientação do professor [Leandro Colevati dos Santos](https://github.com/lecolevati).
 
 ---
 ## ⚙️ Funcionalidades
 
-- [x] Login Administrador e Funcionário
+- [x] Login Administrador e Funcionários (Recepcionista e Veterinário)
 - [x] Cadastro de Funcionários
 - [x] Redefinir Senha
 - [x] Gerenciar Consultas
 - [x] Gerenciar Pacientes
 - [x] Gerenciar Tutores
 - [x] Gerenciar Funcionários
-- [x] Gerar PDF e Impressão de Prontuário
 
 ---
 
@@ -56,7 +55,6 @@ O layout da aplicação está disponível no Figma:
 <p align="center">
   <img alt="login" title="#login" src="./.github/login.png" >
   <img alt="dashboard" title="#dashboard" src="./.github/dashboard.png">
-  <img alt="prontuario" title="#prontuario" src="./.github/prontuario-por-paciente.png">
 </p>
 
 ---
