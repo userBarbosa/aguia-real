@@ -1,5 +1,5 @@
 # base image
-FROM node:14-alpine
+FROM node:16-alpine
 
 RUN mkdir -p /usr/src
 

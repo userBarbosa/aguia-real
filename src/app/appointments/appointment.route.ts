@@ -8,7 +8,7 @@ import {
   getAppointmentsInDateRangeRoute,
   createAppointmentRoute,
   updateAppointmentStateRoute,
-  updateAppointmentObservationRoute,
+  updateAppointmentRoute,
   deleteAppointmentRoute
 } from './appointment.controller'
 
@@ -24,7 +24,7 @@ appointmentRouter.get(`${basePath}/:id`, validateTokenMiddleware, getAppointment
 appointmentRouter.post(`${basePath}/new`, validateTokenMiddleware, createAppointmentRoute)
 
 appointmentRouter.patch(`${basePath}/:id/state`, validateTokenMiddleware, updateAppointmentStateRoute)
-appointmentRouter.patch(`${basePath}/:id/observation`, validateTokenMiddleware, updateAppointmentObservationRoute)
+appointmentRouter.patch(`${basePath}/:id/observation`, validateTokenMiddleware, updateAppointmentRoute)
 
 appointmentRouter.delete(`${basePath}/:id`, validateTokenMiddleware, deleteAppointmentRoute)
 

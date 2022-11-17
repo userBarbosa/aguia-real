@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { insertOne, removeOne, select, selectAll, selectById, updateOne } from '../../services/database'
+import { insertOne, removeOne, select, selectAll, selectById, selectWithLimit, updateOne } from '../../services/database'
 import logger from '../../utils/logger'
 import { UserDTO, UserType } from './user.types'
 
@@ -101,10 +101,52 @@ export async function updateType(data: {
   return false
 }
 
+export async function updateEmailConfirm (data: {
+  id: string,
+  emailConfirm: boolean,
+}): Promise<boolean> {
+  const log = logger.child({ func: 'users.repository.updateEmailConfirm', id: data.id, emailConfirm: data.emailConfirm })
+
+  try {
+    const response = await updateOne(COLLECTION, {_id: new ObjectId(data.id)}, {
+      emailConfirm: data.emailConfirm,
+      updatedAt: new Date()
+    })
+
+    return response
+  } catch (error) {
+    log.error('Error on updating emailConfirm field of user', error)
+
+    throw error
+  }
+}
+export async function readByField(
+  data: string | number | boolean,
+  field: string,
+  limit: number
+): Promise<UserDTO[]> {
+  try {
+    let query: { [key: string]: string | number | boolean } = {};
+    query[field] = data;
+
+    const response = await selectWithLimit<UserDTO>(
+      COLLECTION,
+      query,
+      limit
+    );
+
+    return response;
+  } catch (error) {
+    logger.error("Error getting user by field", error);
+  }
+  return [];
+}
 export async function updatePassword(data: {
   id: string,
   password: string,
 }): Promise<boolean> {
+  const log = logger.child({ func: 'users.repository.updatePassword', ...data })
+
   try {
     const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
       password: data.password,
@@ -113,7 +155,7 @@ export async function updatePassword(data: {
 
     return response
   } catch (error) {
-    logger.error('Error updating user', error)
+    log.error('Error updating user', error)
   }
 
   return false

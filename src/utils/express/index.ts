@@ -10,7 +10,7 @@ import swaggerDocument from '../../utils/documentation/swagger';
 // import jsonDoc from '../documentation/swagger-output.json'
 let jsonDoc: null = null;
 
-export default function startServer() {
+export function startServer() {
   const app = express()
   
   app.use('/api-docs', swaggerUi.serve);

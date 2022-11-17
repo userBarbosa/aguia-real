@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
+import { MailingType, sendEmail } from '../../services/mailing';
 import logger from '../../utils/logger';
 import { ErrorResponse, ErrorType, SuccessResponse } from '../../utils/response';
 import { RequestWithToken } from '../../utils/token/types';
-import { createUser, getAllUsers, getUserById, removeUser, signinUser, updateUser, updateUserPassword, updateUserType } from './user.model';
+import { createUser, getAllUsers, getUserById, removeUser, signinUser, updateUser, updateUserPassword, updateUserType, confirmUserEmail, getUserByEmail, getUserToken } from './user.model';
 
 export async function getAllUsersRoute(req: Request, res: Response) {
   try {
@@ -90,6 +91,86 @@ export async function createUserRoute(req: Request, res: Response) {
     }
   } catch (error) {
     logger.error('Error creating an user', error)
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
+  }
+}
+
+export async function confirmAccountRoute(req: Request, res: Response) {
+  const log = logger.child({ func: 'users.controller.confirmAccountRoute' })
+
+  try {
+    const { id } = (req as RequestWithToken).user
+
+    if (!id) {
+      ErrorResponse(res, ErrorType.BadRequest)
+    } else {
+      const result = await confirmUserEmail({ id })
+
+      if (result) {
+        SuccessResponse(res, { msg: "Conta confirmada com sucesso" })
+      } else {
+        log.error('Error on confirming an user email', {id})
+        ErrorResponse(res, ErrorType.InternalServerError, {msg: "Ocorreu um erro ao confirmar a conta"})
+      }
+    }
+  } catch (error) {
+    log.error('Error on creating an user', error)
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
+  }
+}
+
+export async function requestNewPasswordRoute(req: Request, res: Response) {
+  const log = logger.child({ func: 'users.controller.requestNewPasswordRoute' })
+
+  try {
+    const { email } = req.body
+
+    if (!email) {
+      ErrorResponse(res, ErrorType.BadRequest)
+    } else {
+      const user = await getUserByEmail(email)
+      
+      if (user) {
+        const token = await getUserToken(user, 1000 * 60 * 60 * 3)
+
+        await sendEmail(
+          [user.email],
+          'Redefinição de senha solicitada',
+          MailingType.PASSWORD,
+          { user, token }
+        )
+
+        SuccessResponse(res, true)
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError)
+      }
+    }
+  } catch (error) {
+    log.error('Error on creating an user', error)
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
+  }
+}
+
+export async function resetPasswordRoute(req: Request, res: Response) {
+  const log = logger.child({ func: 'users.controller.requestNewPasswordRoute' })
+
+  try {
+    const { id } = (req as RequestWithToken).user
+    const { password } = req.body
+
+    if (!id) {
+      ErrorResponse(res, ErrorType.BadRequest)
+    } else {
+      const ok = await updateUserPassword({ id, password })
+      
+      if (ok) {
+        SuccessResponse(res, true)
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError)
+      }
+    }
+  } catch (error) {
+    log.error('Error on creating an user', error)
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error)
   }
 }

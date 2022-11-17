@@ -11,7 +11,12 @@ import {
   getAllAppointments,
   getAppointmentsByField,
   getAppointmentsByForeignId,
+  updateAppointmentState,
+  updateAppointment,
+  deleteAppointment,
+  insertDiagnosticAndAppState,
 } from "./appointment.model";
+import { translateData } from "../utilities/utility.controller";
 
 export async function getAppointmentByIdRoute(req: Request, res: Response) {
   try {
@@ -49,15 +54,6 @@ export async function getAllAppointmentsRoute(req: Request, res: Response) {
   }
 }
 
-function translateData(data: string): number | string | boolean {
-  if (data === "true" || data === "false") {
-    return Boolean(data);
-  } else if (!data.match(/\D/) && parseInt(data)) {
-    return parseInt(data);
-  } else {
-    return data;
-  }
-}
 export async function getAppointmentsByFieldRoute(req: Request, res: Response) {
   try {
     let { data, field } = req.query;
@@ -181,17 +177,109 @@ export async function createAppointmentRoute(req: Request, res: Response) {
 }
 
 export async function updateAppointmentStateRoute(req: Request, res: Response) {
-  SuccessResponse(res, 200);
+  try {
+    const { id } = req.params;
+    const { appointmentState } = req.body;
+    if (!id || !appointmentState) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      const response = await updateAppointmentState(id, appointmentState);
+
+      if (response) {
+        SuccessResponse(res, true);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          msg: "error updating appointment state",
+          appId: id,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error updating an appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
 
-export async function updateAppointmentObservationRoute(
-  req: Request,
-  res: Response
-) {
-  SuccessResponse(res, 200);
+export async function finishAppointment(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { appointmentState, diagnostic } = req.body;
+    if (!id || !appointmentState || !diagnostic) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      const response = await insertDiagnosticAndAppState({
+        id,
+        appointmentState,
+        diagnostic,
+      });
+
+      if (response) {
+        SuccessResponse(res, true);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          msg: "error updating appointment state",
+          appId: id,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error updating an appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
+}
+
+export async function updateAppointmentRoute(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const {
+      employeeId,
+      appointmentState,
+      paymentMethod,
+      reason,
+      value,
+      observation,
+    } = req.body;
+    let { date } = req.body;
+
+    if (
+      !id ||
+      !employeeId ||
+      !appointmentState ||
+      !paymentMethod ||
+      !reason ||
+      !date
+    ) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      date = new Date(date);
+      const updated = await updateAppointment({
+        id,
+        employeeId,
+        appointmentState,
+        paymentMethod,
+        reason,
+        value,
+        observation,
+        date,
+      });
+      if (updated) {
+        SuccessResponse(res, true);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          msg: "error updating appointment",
+          appId: id,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error updating an appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
 
 export async function deleteAppointmentRoute(req: Request, res: Response) {
+  // TODO
+  await deleteAppointment("");
   SuccessResponse(res, 200);
 }
 

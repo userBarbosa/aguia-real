@@ -12,7 +12,12 @@ export type Tutor = {
 
 export type TutorDTO = {
     id: string;
+    name: string;
     documentNumber: string;
+    phoneNumber: string;
+    observation:string;
+    patientsName: Array<string>;
+    address: Address;
 } & GenericDTO;
 
 export type Address = {

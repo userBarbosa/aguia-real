@@ -14,9 +14,16 @@ export type Patient = {
 };
 
 export type PatientDTO = {
-    id: string,
+    id: string;
     tutorId: string;
-    species: string;
+    name: string;
+    bloodType: string;
+    observation: string;
+    species: Species;
+    allergy: Allergy;
+    sex: Sex;
+    birthDate: Date;
+    onTreatment?: boolean;
 } & GenericDTO;
 
 export enum Species {

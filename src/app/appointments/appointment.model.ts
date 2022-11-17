@@ -1,3 +1,4 @@
+import logger from "../../utils/logger";
 import {
   read,
   listLimit,
@@ -5,6 +6,10 @@ import {
   readByField,
   searchAppointment,
   store,
+  update,
+  remove,
+  updateState,
+  insertDiagnostic,
 } from "./appointment.repository";
 import {
   Appointment,
@@ -57,6 +62,7 @@ export async function getAppointmentsByField(
   }
   return null;
 }
+
 export async function getAppointmentsByForeignId(
   field: string,
   id: string
@@ -72,6 +78,7 @@ export async function getAppointmentsByForeignId(
     throw error;
   }
 }
+
 export async function getAppointmentsInDateRange(query: {
   field: string;
   lt: Date;
@@ -79,10 +86,11 @@ export async function getAppointmentsInDateRange(query: {
 }): Promise<Appointment[] | null> {
   return null;
 }
+
 export async function createAppointment(data: {
   patientId: string;
   ownerId: string;
-  diagnostic: Diagnostic;
+  diagnostic: Diagnostic | undefined;
   employeeId: string;
   appointmentState: AppointmentState;
   observation: string;
@@ -108,23 +116,72 @@ export async function createAppointment(data: {
   }
   return "already reserved";
 }
-export async function updateAppointmentState(data: {
+
+export async function updateAppointmentState(
+  id: string,
+  appointmentState: AppointmentState
+): Promise<boolean> {
+  const log = logger.child({ func: "updateAppointmentState", appId: id });
+  try {
+    const response = await updateState(id, appointmentState);
+    return response;
+  } catch (error) {
+    log.error("error while updating appointment state");
+    throw error;
+  }
+}
+
+export async function insertDiagnosticAndAppState(data: {
   id: string;
   appointmentState: AppointmentState;
-}): Promise<string | null> {
-  return null;
+  diagnostic: Diagnostic;
+}): Promise<boolean> {
+  const log = logger.child({
+    func: "insertDiagnosticAndAppState",
+    appId: data.id,
+  });
+  try {
+    const response = await insertDiagnostic({ ...data });
+    return response;
+  } catch (error) {
+    log.error("error while updating appointment state");
+    throw error;
+  }
 }
-export async function updateAppointmentObservation(data: {
+
+export async function updateAppointment(data: {
   id: string;
+  employeeId: string;
+  appointmentState: AppointmentState;
+  paymentMethod: PaymentMethod;
+  reason: Reason;
+  value: number;
   observation: string;
-}): Promise<string | null> {
-  return null;
+  date: Date;
+}): Promise<boolean> {
+  const log = logger.child({ func: "updateAppointment", appId: data.id });
+  try {
+    const response = await update({
+      ...data,
+    });
+    return response;
+  } catch (error) {
+    log.error("error while updating appointment");
+    throw error;
+  }
 }
-export async function deleteAppointment(data: {
-  id: string;
-}): Promise<string | null> {
-  return null;
+
+export async function deleteAppointment(id: string): Promise<boolean> {
+  const log = logger.child({ func: "deleteAppointment", appId: id });
+  try {
+    const response = await remove(id);
+    return response;
+  } catch (error) {
+    log.error("error while removing appointment");
+    throw error;
+  }
 }
+
 export async function isReserved(
   patientId: string,
   employeeId: string,

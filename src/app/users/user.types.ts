@@ -4,24 +4,16 @@ export type SigninUserResponse = {
   id: string,
   name: string,
   email: string,
+  emailConfirmed: Date | undefined,
   type: UserType,
   token: string,
 };
-
-export type UserDTO = {
-  id: string,
-  name: string,
-  email: string,
-  password: string,
-  type: UserType,
-} & GenericDTO;
 
 export type User = {
   id?: string,
   name: string,
   email: string,
   type: UserType,
-  password?: string,
   phoneNumber?: string,
   documentNumber?: string,
   medicalLicense?: string,
@@ -29,6 +21,14 @@ export type User = {
   active?: boolean,
   birthDate?: Date,
 };
+
+export type UserDTO = {
+  name: string,
+  email: string,
+  password: string,
+  type: UserType,
+  emailConfirmed: Date | undefined,
+} & GenericDTO
 
 export enum UserType {
   ADMIN='admin',

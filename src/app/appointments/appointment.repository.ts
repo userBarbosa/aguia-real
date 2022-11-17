@@ -4,6 +4,8 @@ import {
   selectAll,
   selectById,
   selectWithLimit,
+  updateOne,
+  removeOne,
 } from "../../services/database/index";
 import {
   AppointmentDTO,
@@ -152,7 +154,7 @@ export async function searchAppointment(
 export async function store(data: {
   patientId: string;
   ownerId: string;
-  diagnostic: Diagnostic;
+  diagnostic: Diagnostic | undefined;
   employeeId: string;
   appointmentState: AppointmentState;
   observation: string;
@@ -185,5 +187,89 @@ export async function store(data: {
       error,
       data,
     };
+  }
+}
+
+export async function update(data: {
+  id: string;
+  employeeId: string;
+  appointmentState: AppointmentState;
+  paymentMethod: PaymentMethod;
+  reason: Reason;
+  value: number;
+  observation: string;
+  date: Date;
+}): Promise<boolean> {
+  try {
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(data.id) },
+      {
+        employeeId: data.employeeId,
+        appointmentState: data.appointmentState,
+        paymentMethod: data.paymentMethod,
+        reason: data.reason,
+        value: data.value,
+        observation: data.observation,
+        date: data.date,
+        updatedAt: new Date(),
+      }
+    );
+    return response;
+  } catch (error) {
+    logger.error("error while updating data", { error, data });
+    throw error;
+  }
+}
+
+export async function updateState(
+  id: string,
+  appointmentState: AppointmentState
+): Promise<boolean> {
+  try {
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(id) },
+      {
+        appointmentState: appointmentState,
+        updatedAt: new Date(),
+      }
+    );
+    return response;
+  } catch (error) {
+    logger.error("error while updating data", { error, id, appointmentState });
+    throw error;
+  }
+}
+
+export async function insertDiagnostic(data: {
+  id: string;
+  appointmentState: AppointmentState;
+  diagnostic: Diagnostic;
+}): Promise<boolean> {
+  try {
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(data.id) },
+      {
+        diagnostic: data.diagnostic,
+        appointmentState: data.appointmentState,
+        updatedAt: new Date(),
+      }
+    );
+    return response;
+  } catch (error) {
+    logger.error("error while updating data", { error, data });
+    throw error;
+  }
+}
+
+export async function remove(id: string): Promise<boolean> {
+  try {
+    const response = await removeOne(COLLECTION, { _id: new ObjectId(id) });
+    return response;
+  } catch (error) {
+    logger.error("error while removing data", { error, id });
+    throw error;
   }
 }

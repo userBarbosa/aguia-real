@@ -1,6 +1,6 @@
 import logger from '../../utils/logger';
 import { createHash, validateHash } from '../../utils/crypt';
-import { list, read, readByEmail, remove, store, update, updatePassword, updateType } from './user.repository';
+import { list, read, readByEmail, readByField, remove, store, update, updateEmailConfirm, updatePassword, updateType } from './user.repository';
 import { SigninUserResponse, User, UserDTO, UserType } from './user.types';
 import { createToken } from '../../utils/token';
 import { TokenUserPayload } from '../../utils/token/types';
@@ -32,6 +32,7 @@ export async function signinUser(email: string, password: string): Promise<Signi
           name: existingUser.name,
           email: existingUser.email,
           type: existingUser.type,
+          emailConfirmed: existingUser.emailConfirmed
         }
         const token = await createToken(tokenUserPayload)
 
@@ -48,6 +49,61 @@ export async function signinUser(email: string, password: string): Promise<Signi
   }
 
   return null
+}
+
+export async function confirmUserEmail(data: {
+  id: string,
+}): Promise<boolean> {
+  const log = logger.child({ func: "users.model.confirmUserEmail", id: data.id })
+
+  try {  
+    const result = await updateEmailConfirm({...data, emailConfirm: true})
+
+    if (result) return result
+    else throw result
+  } catch (error) {
+    log.error('Error on updating user', {error})
+
+    throw error
+  }
+}
+
+export async function getAppointmentsByField(
+  data: string | number | boolean,
+  field: string
+): Promise<User[] | null> {
+  const users = await readByField(data, field, 50);
+
+  if (users) {
+    return makeUserListResponse(users);
+  }
+  return null;
+}
+
+export async function getUserByEmail(email: string): Promise<User | null> {
+  return null
+}
+
+export async function getUserToken(user: User, expMilli?: number): Promise<string> {
+  const log = logger.child({ func: 'users.model.getUserToken', user, expMilli })
+
+  try {
+    const tokenUserPayload: TokenUserPayload = {
+      id: user.id as string,
+      name: user.name,
+      email: user.email,
+      type: user.type,
+      emailConfirmed: undefined
+    }
+  
+    const token = await createToken(tokenUserPayload, {exp: expMilli})
+  
+    return token
+  } catch (error) {
+    log.error("Error on getting user token", {error})
+
+    throw error
+  }
 }
 
 export async function createUser(data: {

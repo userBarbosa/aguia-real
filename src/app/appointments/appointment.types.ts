@@ -4,7 +4,7 @@ export type Appointment = {
   id?: string;
   patientId: string;
   ownerId: string;
-  diagnostic: Diagnostic;
+  diagnostic?: Diagnostic;
   employeeId: string;
   appointmentState: AppointmentState;
   observation?: string;

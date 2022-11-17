@@ -1,3 +1,3 @@
-import startServer from "../src/utils/express";
+const { startServer } = require("./utils/express");
 
 startServer();
