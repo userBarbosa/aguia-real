@@ -1,5 +1,5 @@
 # base image
-FROM node:14-alpine
+FROM node:16-alpine
 
 RUN mkdir -p /usr/src
 
@@ -11,6 +11,6 @@ COPY ./dist /usr/src/dist
 
 RUN npm install
 
-EXPOSE 8002
+EXPOSE 3001
 
 CMD npm run start

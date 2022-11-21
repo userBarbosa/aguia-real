@@ -1,17 +1,26 @@
 {
-  "name": "template-api-nodejs",
-  "version": "1.0.0",
-  "description": "",
+  "name": "aguia-real",
+  "version": "0.0.1",
+  "description": "Scheduling system for pet shops and veterinary clinics.",
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server.js",
     "start:dev": "ts-node-dev ./src/server.ts",
+    "swagger-autogen": "node ./src/utils/documentation/autogen.ts",
     "build": "tsc"
   },
-  "author": "Rafael Vilarinho",
-  "license": "GNU",
+  "author": "Marcos Barbosa <marcos.barbosa@fatec.sp.gov.br>",
+  "contributors": [
+    "Ana Alves <ana.alves41@fatec.sp.gov.br>",
+    "Viktor Ferrer <viktor.ferrer@fatec.sp.gov.br>"
+  ],
+  "template": {
+    "author": "Rafael Vilarinho",
+    "license": "GNU",
+    "name": "template-api-nodejs",
+    "repository": "github:/rafaelvilarinho/template-api-nodejs"
+  },
   "dependencies": {
-    "@sendgrid/mail": "^7.7.0",
     "axios": "^0.25.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
@@ -19,6 +28,8 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.6.0",
+    "nodemailer": "^6.8.0",
+    "swagger-ui-express": "^4.5.0",
     "winston": "^3.7.2"
   },
   "devDependencies": {
@@ -26,8 +37,10 @@
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
-    "@types/mongodb": "^4.0.7",
-    "ts-node-dev": "^1.1.8",
-    "typescript": "^4.5.5"
+    "@types/nodemailer": "^6.4.6",
+    "@types/swagger-ui-express": "^4.1.3",
+    "swagger-autogen": "^2.22.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.4"
   }
 }

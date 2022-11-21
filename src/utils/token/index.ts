@@ -8,7 +8,7 @@ import { RequestWithToken, TokenUserPayload } from './types'
 const TOKEN_EXP_DEFAULT = 60 * 60 * 2
 
 export async function createToken(data: any, options?: {
-  exp: number
+  exp?: number
 }) {
   try {
     const token = jwt.sign(data, environment.TOKEN_SECRET, {

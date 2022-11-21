@@ -5,3 +5,7 @@ export type GenericDTO = {
   deletedAt: string | Date,
   active: number,
 }
+
+export type GenericObject = {
+  query: Record<string, any>
+}
