@@ -77,25 +77,25 @@ export async function readByForeignId(
     return response;
   } catch (error) {
     /* const getErrorObject = (error) =>
-  Object.getOwnPropertyNames(error).reduce((acc, curr) => {
-    acc[curr] = error[curr];
-    return acc;
-  }, {});
+      Object.getOwnPropertyNames(error).reduce((acc, curr) => {
+        acc[curr] = error[curr];
+        return acc;
+      }, {});
 
-getErrorObject(newError);
- */
+    getErrorObject(newError);
 
     if (error instanceof Error && error.stack) {
       for (const property of Object.getOwnPropertyNames(error)) {
       }
     }
-    logger.error("Error getting appointment by id", error);
     throw {
       message: "Error getting appointment by id",
       error,
-    };
+    }; */
+  
+    logger.error("Error getting appointment by id", error);
   }
-  // return [];
+  return [];
 }
 
 export async function readByField(
@@ -121,34 +121,41 @@ export async function readByField(
 }
 
 export async function searchAppointment(
-  patientId: string,
-  employeeId: string,
   timeDate: Date,
+  patientId?: string,
+  employeeId?: string,
   appointmentTime?: number
-): Promise<boolean> {
+): Promise<AppointmentDTO | null> {
   try {
     const gteDate = timeDate;
     const ltDate = new Date(
       timeDate.getTime() + (appointmentTime || 30 * 60 * 1000)
     );
-    const data = {
-      patientId: new ObjectId(patientId),
-      employeeId: new ObjectId(employeeId),
+    let data: Record<string, any> = {
       date: {
         $gte: gteDate,
         $lt: ltDate,
       },
     };
+    if (patientId) {
+      data["patientId"] = new ObjectId(patientId);
+    } else if (employeeId) {
+      data["employeeId"] = new ObjectId(employeeId);
+    } else {
+      throw {
+        error: "missing required property",
+      };
+    }
 
     const result = await select<AppointmentDTO>(COLLECTION, data);
 
     if (result) {
-      return true;
+      return result;
     }
   } catch (error) {
     logger.error("error finding reserved appointment", error);
   }
-  return false;
+  return null;
 }
 
 export async function store(data: {

@@ -1,52 +1,45 @@
 import { Router } from "express";
 import { validateTokenMiddleware } from "../../utils/token";
-import { getTutorByIdRoute } from "./tutor.controller";
+import {
+  getTutorByIdRoute,
+  getAllTutorsRoute,
+  getTutorsByFieldRoute,
+  createTutorRoute,
+  updateTutorRoute,
+  deleteTutorRoute,
+  deletePatientFromTutor,
+  insertPatientFromTutor,
+} from "./tutor.controller";
 
 const tutorRouter = Router();
 const basePath = "/tutor";
 
-tutorRouter.get(
-  `${basePath}/all`,
-  validateTokenMiddleware,
-  getTutorByIdRoute
-);
+tutorRouter.get(`${basePath}/all`, validateTokenMiddleware, getAllTutorsRoute);
 tutorRouter.get(
   `${basePath}/field`,
   validateTokenMiddleware,
-  getTutorByIdRoute
+  getTutorsByFieldRoute
 );
-tutorRouter.get(
-  `${basePath}/:id`,
-  validateTokenMiddleware,
-  getTutorByIdRoute
-);
+tutorRouter.get(`${basePath}/:id`, validateTokenMiddleware, getTutorByIdRoute);
 
-tutorRouter.post(
-  `${basePath}/new`, 
-  validateTokenMiddleware, 
-  getTutorByIdRoute
-);
+tutorRouter.post(`${basePath}/new`, validateTokenMiddleware, createTutorRoute);
 tutorRouter.post(
   `${basePath}/:id/patients/:patient`,
   validateTokenMiddleware,
-  getTutorByIdRoute
+  insertPatientFromTutor
 );
 
-tutorRouter.patch(
-  `${basePath}/:id`,
-  validateTokenMiddleware,
-  getTutorByIdRoute
-);
+tutorRouter.put(`${basePath}/:id`, validateTokenMiddleware, updateTutorRoute);
 
 tutorRouter.delete(
   `${basePath}/:id`,
   validateTokenMiddleware,
-  getTutorByIdRoute
+  deleteTutorRoute
 );
 tutorRouter.delete(
   `${basePath}/:id/patients/:patient`,
   validateTokenMiddleware,
-  getTutorByIdRoute
+  deletePatientFromTutor
 );
 
 export default tutorRouter;

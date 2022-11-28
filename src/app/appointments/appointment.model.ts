@@ -100,9 +100,9 @@ export async function createAppointment(data: {
   date: Date;
 }): Promise<string | null> {
   const scheduleIsReserved = await isReserved(
+    data.date,
     data.patientId,
     data.employeeId,
-    data.date
   );
   if (!scheduleIsReserved) {
     try {
@@ -183,15 +183,15 @@ export async function deleteAppointment(id: string): Promise<boolean> {
 }
 
 export async function isReserved(
-  patientId: string,
-  employeeId: string,
   timeDate: Date,
+  patientId?: string,
+  employeeId?: string,
   appointmentTime?: number
-): Promise<boolean> {
+): Promise<AppointmentDTO | null> {
   return await searchAppointment(
+    timeDate,
     patientId,
     employeeId,
-    timeDate,
     appointmentTime
   );
 }

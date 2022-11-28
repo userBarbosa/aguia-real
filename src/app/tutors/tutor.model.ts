@@ -14,15 +14,12 @@ export async function getTutorsByField(
 ): Promise<Tutor[] | null> {
   return null;
 }
-export async function getTutorsByTutorId(id: string): Promise<Tutor | null> {
-  return null;
-}
 
 export async function createTutor(data: {}): Promise<string | null> {
   return "";
 }
 
-export async function updateTutorObservationRouteObservation(data: {}): Promise<
+export async function updateTutor(data: {}): Promise<
   string | null
 > {
   return "";
@@ -30,6 +27,10 @@ export async function updateTutorObservationRouteObservation(data: {}): Promise<
 
 export async function deleteTutor(data: {}): Promise<string | null> {
   return "";
+}
+
+export async function removePatientFromTutorArray(id: string, patientId: string) : Promise<boolean> {
+  return false
 }
 
 function makeTutorResponse(tutor: TutorDTO): Tutor {

@@ -1,15 +1,14 @@
 import {
   insertOne,
-  select,
   selectAll,
   selectById,
   selectWithLimit,
   updateOne,
-  removeOne
+  removeOne,
 } from "../../services/database/index";
-import { Allergy, Patient, PatientDTO, Sex, Species } from "./patient.types";
-import logger from "../../utils/logger";
+import { Allergy, PatientDTO, Sex, Species } from "./patient.types";
 import { ObjectId } from "mongodb";
+import { removingNullValues } from "../utilities/utility.controller";
 
 const COLLECTION = "patients";
 
@@ -18,9 +17,11 @@ export async function list(): Promise<PatientDTO[]> {
     const response = await selectAll<PatientDTO>(COLLECTION, {});
     return response;
   } catch (error) {
-    logger.error(error);
+    throw {
+      message: "error while trying to return all",
+      error,
+    };
   }
-  return [];
 }
 
 export async function listLimit(
@@ -36,9 +37,12 @@ export async function listLimit(
 
     return response;
   } catch (error) {
-    logger.error("Error getting all patients", error);
+    throw {
+      message: "error while trying to return all",
+      params: { query, limit },
+      error,
+    };
   }
-  return [];
 }
 
 export async function read(id: string): Promise<PatientDTO | null> {
@@ -47,9 +51,12 @@ export async function read(id: string): Promise<PatientDTO | null> {
 
     return response;
   } catch (error) {
-    logger.error("Error getting patient by id", error);
+    throw {
+      message: "error while trying to return patient",
+      id,
+      error,
+    };
   }
-  return null;
 }
 
 export async function readByForeignId(
@@ -61,21 +68,13 @@ export async function readByForeignId(
     let data: { [key: string]: ObjectId } = {};
     data[field] = new ObjectId(id);
 
-    const response = await selectWithLimit<PatientDTO>(
-      COLLECTION,
-      data,
-      limit
-    );
+    const response = await selectWithLimit<PatientDTO>(COLLECTION, data, limit);
 
     return response;
   } catch (error) {
-    if (error instanceof Error && error.stack) {
-      for (const property of Object.getOwnPropertyNames(error)) {
-      }
-    }
-    logger.error("Error getting patient by id", error);
     throw {
-      message: "Error getting patient by id",
+      message: "Error getting patient by foreign id",
+      params: { field, id, limit },
       error,
     };
   }
@@ -98,9 +97,12 @@ export async function readByField(
 
     return response;
   } catch (error) {
-    logger.error("Error getting patient by field", error);
+    throw {
+      message: "Error getting patient by field",
+      params: { field, data, limit },
+      error,
+    };
   }
-  return [];
 }
 
 export async function store(data: {
@@ -124,58 +126,72 @@ export async function store(data: {
       allergy: data.allergy,
       sex: data.sex,
       birthDate: data.birthDate,
-      onTreatment: data.onTreatment
+      onTreatment: data.onTreatment,
     });
-    return response
+    return response;
   } catch (error) {
-    logger.error("error creating patient", error)
+    throw {
+      message: "Error getting patient by field",
+      data,
+      error,
+    };
   }
-  return null;
 }
 
-
-export async function update (data: {
-  id: string,
+export async function update(data: {
+  id: string;
   tutorId: string;
-  name: string;
+  name?: string;
   bloodType?: string;
   observation?: string;
-  species: Species;
+  species?: Species;
   allergy?: Allergy;
-  sex: Sex;
-  birthDate: Date;
+  sex?: Sex;
+  birthDate?: Date;
   onTreatment?: boolean;
 }): Promise<boolean> {
   try {
-    const response = await updateOne(COLLECTION, {_id: new ObjectId(data.id)}, {
+    const cleanedPatientObject = removingNullValues({
+      id: data.id,
       tutorId: data.tutorId,
       name: data.name,
-      bloodType: data.bloodType,
-      observation: data.observation,
       species: data.species,
-      allergy: data.allergy,
       sex: data.sex,
       birthDate: data.birthDate,
+      bloodType: data.bloodType,
+      observation: data.observation,
+      allergy: data.allergy,
       onTreatment: data.onTreatment,
-      updatedAt: new Date()
-    })
+    });
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(data.id) },
+      {
+        ...cleanedPatientObject,
+        updatedAt: new Date(),
+      }
+    );
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error updating patient', error)
+    throw {
+      message: "error at update patient",
+      error,
+      data,
+    };
   }
-
-  return false
 }
 
-export async function remove (data: {id: string}): Promise<boolean> {
+export async function remove(id: string): Promise<boolean> {
   try {
-    const response = await removeOne(COLLECTION, {_id: new ObjectId(data.id)})
+    const response = await removeOne(COLLECTION, { _id: new ObjectId(id) });
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error removing patient', error)
+    throw {
+      message: "error at remove patient",
+      error,
+      id,
+    };
   }
-
-  return false
 }

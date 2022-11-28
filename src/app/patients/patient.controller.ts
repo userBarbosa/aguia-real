@@ -11,7 +11,7 @@ import {
   getPatientsByField,
   getPatientsByTutorId,
   createPatient,
-  updatePatientObservationRouteObservation,
+  updatePatient,
   deletePatient,
 } from "./patient.model";
 import { translateData } from "../utilities/utility.controller";
@@ -148,16 +148,71 @@ export async function createPatientRoute(req: Request, res: Response) {
   }
 }
 
-export async function updatePatientObservationRoute(
-  req: Request,
-  res: Response
-) {
-  await updatePatientObservationRouteObservation({});
-  SuccessResponse(res, 200);
+export async function updatePatientRoute(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const {
+      tutorId,
+      name,
+      species,
+      sex,
+      bloodType,
+      observation,
+      allergy,
+      onTreatment,
+    } = req.body;
+    let { birthDate } = req.body;
+
+    if (!id || !tutorId || !name || !species || !sex || !birthDate) {
+      ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
+    } else {
+      birthDate = new Date(birthDate);
+
+      const updated = await updatePatient({
+        id,
+        tutorId,
+        name,
+        species,
+        sex,
+        bloodType,
+        observation,
+        allergy,
+        birthDate,
+        onTreatment,
+      });
+      if (updated) {
+        SuccessResponse(res, 200);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          msg: "error updating patient",
+          patientId: id,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error updating patient", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
 
 export async function deletePatientRoute(req: Request, res: Response) {
-  const id = ""
-  await deletePatient(id);
-  SuccessResponse(res, 200);
+  try {
+    const { id, tutorId } = req.params;
+    if (!id) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      const deleted = await deletePatient(id, tutorId);
+      if (deleted) {
+        SuccessResponse(res, 200);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          msg: "error deleting patient",
+          patientId: id,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error deleting patient", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }

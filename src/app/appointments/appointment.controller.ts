@@ -15,6 +15,7 @@ import {
   updateAppointment,
   deleteAppointment,
   insertDiagnosticAndAppState,
+  isReserved,
 } from "./appointment.model";
 import { translateData } from "../utilities/utility.controller";
 
@@ -278,11 +279,39 @@ export async function updateAppointmentRoute(req: Request, res: Response) {
 }
 
 export async function deleteAppointmentRoute(req: Request, res: Response) {
-  // TODO
-  await deleteAppointment("");
-  SuccessResponse(res, 200);
+  try {
+    const { id } = req.params;
+    if (!id) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      const deleted = await deleteAppointment(id);
+      if (deleted) {
+        SuccessResponse(res, 200);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          msg: "error deleting appointment",
+          appId: id,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error deleting appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
 
 export async function isReservedRoute(req: Request, res: Response) {
-  SuccessResponse(res, 200);
+  try {
+    const { patientId, employeeId, timeDate } = req.params;
+    if (!timeDate || (!patientId && !employeeId)) {
+      ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
+    } else {
+      const tratedTimeDate = new Date(timeDate);
+      const reserved = await isReserved(tratedTimeDate, patientId, employeeId);
+      SuccessResponse(res, 200);
+    }
+  } catch (error) {
+    logger.error("error getting reserved appointment", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
 }
