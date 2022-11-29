@@ -13,6 +13,8 @@ import {
   createTutor,
   updateTutor,
   deleteTutor,
+  removePatientFromTutorArray,
+  insertPatientOnTutorArray,
 } from "./tutor.model";
 
 export async function getTutorByIdRoute(req: Request, res: Response) {
@@ -28,7 +30,7 @@ export async function getTutorByIdRoute(req: Request, res: Response) {
         SuccessResponse(res, tutor);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Tutor não encontrado",
+          message: "Tutor não encontrado",
         });
       }
     }
@@ -67,7 +69,7 @@ export async function getTutorsByFieldRoute(req: Request, res: Response) {
         SuccessResponse(res, tutor);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Tutor não encontrado",
+          message: "Tutor não encontrado",
         });
       }
     }
@@ -96,7 +98,7 @@ export async function createTutorRoute(req: Request, res: Response) {
         if (id !== "already exists") {
           SuccessResponse(res, { id });
         } else {
-          const error = { msg: "already exists" };
+          const error = { message: "already exists" };
           logger.error("error creating an tutor", error);
           ErrorResponse(res, ErrorType.Forbidden, error);
         }
@@ -128,10 +130,10 @@ export async function updateTutorRoute(req: Request, res: Response) {
         address,
       });
       if (updated) {
-        SuccessResponse(res, 200);
+        SuccessResponse(res, updated);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error updating tutor",
+          message: "error updating tutor",
           id,
         });
       }
@@ -150,10 +152,10 @@ export async function deleteTutorRoute(req: Request, res: Response) {
     } else {
       const deleted = await deleteTutor(id);
       if (deleted) {
-        SuccessResponse(res, 200);
+        SuccessResponse(res, deleted);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error deleting tutor",
+          message: "error deleting tutor",
           id,
         });
       }
@@ -164,5 +166,54 @@ export async function deleteTutorRoute(req: Request, res: Response) {
   }
 }
 
-export async function deletePatientFromTutor(req: Request, res: Response) {}
-export async function insertPatientFromTutor(req: Request, res: Response) {}
+export async function deletePatientFromTutor(req: Request, res: Response) {
+  try {
+    const { id, patientId } = req.params;
+    if (!id || !patientId) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      const ok = await removePatientFromTutorArray(id, patientId);
+      if (ok) {
+        if (ok !== "patient not found") {
+          SuccessResponse(res, ok);
+        } else {
+          const error = { message: "patient not found" };
+          logger.error("error trying removing patient from tutor array", error);
+          ErrorResponse(res, ErrorType.Forbidden, error);
+        }
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          message: "error trying removing patient from tutor array",
+          id,
+          patientId,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error trying removing patient from tutor array", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
+}
+
+export async function insertPatientFromTutor(req: Request, res: Response) {
+  try {
+    const { id, patientId } = req.params;
+    if (!id || !patientId) {
+      ErrorResponse(res, ErrorType.BadRequest);
+    } else {
+      const response = await insertPatientOnTutorArray(id, patientId);
+      if (response) {
+        SuccessResponse(res, response);
+      } else {
+        ErrorResponse(res, ErrorType.InternalServerError, {
+          message: "error trying inserting patient on tutor array",
+          id,
+          patientId,
+        });
+      }
+    }
+  } catch (error) {
+    logger.error("error trying inserting patient on tutor array", error);
+    ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
+  }
+}

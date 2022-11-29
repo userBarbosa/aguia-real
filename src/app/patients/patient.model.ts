@@ -1,6 +1,7 @@
 import logger from "../../utils/logger";
 import {
   getTutorById,
+  insertPatientOnTutorArray,
   removePatientFromTutorArray,
 } from "../tutors/tutor.model";
 import {
@@ -105,14 +106,23 @@ export async function createPatient(data: {
   });
   try {
     const tutor = await getTutorById(data.tutorId);
-    if (tutor) {
-      const response = await store({
-        ...data,
-      });
-      return response;
-    } else {
+    if (!tutor) {
+      log.error("tutor not found", { tutorId: data.tutorId });
       return "tutor not found";
     }
+    const id = await store({
+      ...data,
+    });
+    if (!id) {
+      log.error("tutor not found", { data });
+      return "failed while storing patient";
+    }
+    const ok = await insertPatientOnTutorArray(data.tutorId, id);
+    if (!ok) {
+      log.error("tutor not found", { data, id });
+      return "created but not inserted on tutor list";
+    }
+    return id;
   } catch (error) {
     log.error("error creating patient", error);
     throw error;
@@ -172,7 +182,7 @@ export async function deletePatient(
     const responseTutor = await removePatientFromTutorArray(tutorId, patientId);
     if (!responseTutor) {
       throw {
-        error: "unknown error at remove patient",
+        error: "unknown error at remove patient from tutor array",
       };
     }
     return true;

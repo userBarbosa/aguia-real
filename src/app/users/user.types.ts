@@ -28,6 +28,12 @@ export type UserDTO = {
   password: string,
   type: UserType,
   emailConfirmed: Date | undefined,
+  phoneNumber: string,
+  documentNumber: string,
+  medicalLicense: string,
+  specialty: Specialty,
+  active: boolean,
+  birthDate: Date,
 } & GenericDTO
 
 export enum UserType {

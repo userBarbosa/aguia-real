@@ -28,7 +28,7 @@ export async function getUserByIdRoute(req: Request, res: Response) {
       if (user) {
         SuccessResponse(res, user)
       } else {
-        ErrorResponse(res, ErrorType.NotFound, { msg: "Usuário não encontrado" })
+        ErrorResponse(res, ErrorType.NotFound, { message: "Usuário não encontrado" })
       }
 
     }
@@ -51,7 +51,7 @@ export async function signinUserRoute(req: Request, res: Response) {
         if (user.id) {
           SuccessResponse(res, { user })
         } else {
-          ErrorResponse(res, ErrorType.Forbidden, { msg: "Credenciais incorretas" })
+          ErrorResponse(res, ErrorType.Forbidden, { message: "Credenciais incorretas" })
         }
       } else {
         ErrorResponse(res, ErrorType.InternalServerError)
@@ -107,10 +107,10 @@ export async function confirmAccountRoute(req: Request, res: Response) {
       const result = await confirmUserEmail({ id })
 
       if (result) {
-        SuccessResponse(res, { msg: "Conta confirmada com sucesso" })
+        SuccessResponse(res, { message: "Conta confirmada com sucesso" })
       } else {
         log.error('Error on confirming an user email', {id})
-        ErrorResponse(res, ErrorType.InternalServerError, {msg: "Ocorreu um erro ao confirmar a conta"})
+        ErrorResponse(res, ErrorType.InternalServerError, {message: "Ocorreu um erro ao confirmar a conta"})
       }
     }
   } catch (error) {
@@ -188,7 +188,7 @@ export async function updateUserRoute(req: Request, res: Response) {
       if (ok) {
         SuccessResponse(res, true)
       } else {
-        ErrorResponse(res, ErrorType.InternalServerError, { msg: "Ocorreu um erro durante a atualização do usuário" })
+        ErrorResponse(res, ErrorType.InternalServerError, { message: "Ocorreu um erro durante a atualização do usuário" })
       }
     }
   } catch (error) {

@@ -1,125 +1,71 @@
-import { ObjectId } from 'mongodb'
-import { insertOne, removeOne, select, selectAll, selectById, selectWithLimit, updateOne } from '../../services/database'
-import logger from '../../utils/logger'
-import { UserDTO, UserType } from './user.types'
+import { ObjectId } from "mongodb";
+import {
+  insertOne,
+  removeOne,
+  select,
+  selectAll,
+  selectById,
+  selectWithLimit,
+  updateOne,
+} from "../../services/database";
+import { removingNullValues } from "../utilities/utility.controller";
+import { Specialty, UserDTO, UserType } from "./user.types";
 
-const COLLECTION = "users"
+const COLLECTION = "users";
 
 export async function list(): Promise<UserDTO[]> {
   try {
-    const response = await selectAll<UserDTO>(COLLECTION, {})
+    const response = await selectAll<UserDTO>(COLLECTION, {});
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting all users', error)
+    throw {
+      message: "error while trying to list appointments",
+      error,
+    };
   }
-
-  return []
 }
 
-export async function read(data: { id: string }): Promise<UserDTO | null> {
+export async function listLimit(query: any, limit: number): Promise<UserDTO[]> {
   try {
-    const response = await selectById<UserDTO>(COLLECTION, data.id)
+    const response = await selectWithLimit<UserDTO>(COLLECTION, query, limit);
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting user by id', error)
+    throw {
+      message: "error while trying to list limited appointments",
+      error,
+    };
   }
-
-  return null
 }
 
-export async function readByEmail(data: { email: string }): Promise<UserDTO | null> {
+export async function read(id: string): Promise<UserDTO | null> {
   try {
-    const response = await select<UserDTO>(COLLECTION, data)
+    const response = await selectById<UserDTO>(COLLECTION, id);
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error getting user by id', error)
+    throw {
+      message: "error while trying to list limited appointments",
+      error,
+    };
   }
-
-  return null
 }
 
-export async function store(data: {
-  name: string,
-  email: string,
-  password: string,
-  type: UserType,
-}): Promise<string | null> {
+export async function readByEmail(email: string): Promise<UserDTO | null> {
   try {
-    const response = await insertOne(COLLECTION, {
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      type: data.type,
-      createdAt: new Date(),
-      active: 1
-    })
+    const response = await select<UserDTO>(COLLECTION, { email });
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error creating user', error)
-  }
-
-  return null
-}
-
-export async function update(data: {
-  id: string,
-  name: string,
-}): Promise<boolean> {
-  try {
-    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
-      name: data.name,
-      updatedAt: new Date()
-    })
-
-    return response
-  } catch (error) {
-    logger.error('Error updating user', error)
-  }
-
-  return false
-}
-
-export async function updateType(data: {
-  id: string,
-  type: UserType
-}): Promise<boolean> {
-  try {
-    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
-      type: data.type,
-      updatedAt: new Date(),
-    })
-
-    return response
-  } catch (error) {
-    logger.error('Error updating user', error)
-  }
-
-  return false
-}
-
-export async function updateEmailConfirm (data: {
-  id: string,
-  emailConfirm: boolean,
-}): Promise<boolean> {
-  const log = logger.child({ func: 'users.repository.updateEmailConfirm', id: data.id, emailConfirm: data.emailConfirm })
-
-  try {
-    const response = await updateOne(COLLECTION, {_id: new ObjectId(data.id)}, {
-      emailConfirm: data.emailConfirm,
-      updatedAt: new Date()
-    })
-
-    return response
-  } catch (error) {
-    log.error('Error on updating emailConfirm field of user', error)
-
-    throw error
+    throw {
+      message: "error while trying to return patient",
+      email,
+      error,
+    };
   }
 }
+
 export async function readByField(
   data: string | number | boolean,
   field: string,
@@ -129,61 +75,199 @@ export async function readByField(
     let query: { [key: string]: string | number | boolean } = {};
     query[field] = data;
 
-    const response = await selectWithLimit<UserDTO>(
+    const response = await selectWithLimit<UserDTO>(COLLECTION, query, limit);
+
+    return response;
+  } catch (error) {
+    throw {
+      message: "Error getting user by field",
+      params: { field, data, limit },
+      error,
+    };
+  }
+}
+
+export async function store(data: {
+  name: string;
+  email: string;
+  password: string;
+  type: UserType;
+  emailConfirmed?: Date;
+  phoneNumber?: string;
+  documentNumber?: string;
+  medicalLicense?: string;
+  specialty?: Specialty;
+  birthDate?: Date;
+}): Promise<string | null> {
+  try {
+    const id = await insertOne(COLLECTION, {
+      name: data.name,
+      email: data.email,
+      emailConfirmed: data.emailConfirmed,
+      password: data.password,
+      type: data.type,
+      createdAt: new Date(),
+      active: 1,
+      phoneNumber: data.phoneNumber,
+      documentNumber: data.documentNumber,
+      medicalLicense: data.medicalLicense,
+      specialty: data.specialty,
+      birthDate: data.birthDate,
+    });
+
+    return id;
+  } catch (error) {
+    throw {
+      message: "error while storing user",
+      error,
+      data,
+    };
+  }
+}
+
+export async function update(data: {
+  id: string;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  documentNumber?: string;
+  medicalLicense?: string;
+  specialty?: Specialty;
+  birthDate?: Date;
+}): Promise<boolean> {
+  try {
+    const cleanedUserObject = removingNullValues({
+      name: data.name,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      documentNumber: data.documentNumber,
+      medicalLicense: data.medicalLicense,
+      specialty: data.specialty,
+      birthDate: data.birthDate,
+    });
+    const response = await updateOne(
       COLLECTION,
-      query,
-      limit
+      { _id: new ObjectId(data.id) },
+      {
+        ...cleanedUserObject,
+        updatedAt: new Date(),
+      }
     );
 
     return response;
   } catch (error) {
-    logger.error("Error getting user by field", error);
+    throw {
+      message: "error at update user",
+      error,
+      data,
+    };
   }
-  return [];
 }
-export async function updatePassword(data: {
+
+export async function updateType(id: string, type: UserType): Promise<boolean> {
+  try {
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(id) },
+      {
+        type,
+        updatedAt: new Date(),
+      }
+    );
+
+    return response;
+  } catch (error) {
+    throw {
+      message: "error at update user type",
+      error,
+      data: { id, type },
+    };
+  }
+}
+
+export async function updateActiveState(
   id: string,
-  password: string,
-}): Promise<boolean> {
-  const log = logger.child({ func: 'users.repository.updatePassword', ...data })
-
+  active: boolean
+): Promise<boolean> {
   try {
-    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
-      password: data.password,
-      updatedAt: new Date(),
-    })
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(id) },
+      {
+        active,
+        updatedAt: new Date(),
+      }
+    );
 
-    return response
+    return response;
   } catch (error) {
-    log.error('Error updating user', error)
+    throw {
+      message: "error at update user active state",
+      error,
+      data: { id, active },
+    };
   }
-
-  return false
 }
 
-export async function block(data: { id: string }): Promise<boolean> {
+export async function updateEmailConfirmedState(
+  id: string,
+  emailConfirmed: Date
+): Promise<boolean> {
   try {
-    const response = await updateOne(COLLECTION, { _id: new ObjectId(data.id) }, {
-      active: 0,
-      deletedAt: new Date(),
-    })
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(id) },
+      {
+        emailConfirmed,
+        updatedAt: new Date(),
+      }
+    );
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error blocking user', error)
+    throw {
+      message: "error at update user",
+      error,
+      data: { id, emailConfirmed },
+    };
   }
-
-  return false
 }
 
-export async function remove(data: { id: string }): Promise<boolean> {
+export async function updatePassword(
+  id: string,
+  password: string
+): Promise<boolean> {
   try {
-    const response = await removeOne(COLLECTION, { _id: new ObjectId(data.id) })
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(id) },
+      {
+        password,
+        updatedAt: new Date(),
+      }
+    );
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Error removing user', error)
+    throw {
+      message: "error at update user password",
+      error,
+    };
   }
+}
 
-  return false
+export async function remove(id: string): Promise<boolean> {
+  try {
+    const response = await removeOne(COLLECTION, {
+      _id: new ObjectId(id),
+    });
+
+    return response;
+  } catch (error) {
+    throw {
+      message: "error at remove patient",
+      error,
+      id,
+    };
+  }
 }

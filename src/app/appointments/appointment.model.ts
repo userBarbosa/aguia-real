@@ -10,6 +10,7 @@ import {
   remove,
   updateState,
   insertDiagnostic,
+  readByDateRange,
 } from "./appointment.repository";
 import {
   Appointment,
@@ -23,33 +24,62 @@ import {
 export async function getAppointmentById(
   id: string
 ): Promise<Appointment | null> {
-  const appointment = await read(id);
+  const log = logger.child({
+    func: "getAppointmentById",
+    data: { id },
+  });
+  try {
+    const appointment = await read(id);
 
-  if (appointment) {
-    return makeAppointmentResponse(appointment);
+    if (appointment) {
+      return makeAppointmentResponse(appointment);
+    }
+    return null;
+  } catch (error) {
+    log.error("error getting appointment id", error);
+    throw error;
   }
-  return null;
 }
 
 export async function getAllAppointments(
   query: {},
   limit: number
 ): Promise<Appointment[]> {
-  const appointments = await listLimit(query, limit);
-  return makeAppointmentListResponse(appointments);
+  const log = logger.child({
+    func: "getAllAppointments",
+  });
+  try {
+    const appointments = await listLimit(query, limit);
+    return makeAppointmentListResponse(appointments);
+  } catch (error) {
+    log.error("error getting all appointments", error);
+    throw error;
+  }
 }
 
-// export async function getNextAppointment(
-//   field: string,
-//   id: string
-// ): Promise<Appointment | null> {
-//   const appointment = await readByForeignId(field, id);
-
-//   if (appointment) {
-//     return makeAppointmentResponse(appointment);
-//   }
-//   return null;
-// }
+export async function getAppointmentsByDateRange(
+  greaterThanOrEqualDate: Date,
+  lesserThanDate: Date,
+  patientId?: string,
+  employeeId?: string
+): Promise<Appointment[]> {
+  const log = logger.child({
+    func: "getAppointmentsByDateRange",
+    data: { greaterThanOrEqualDate, lesserThanDate, patientId, employeeId },
+  });
+  try {
+    const appointments = await readByDateRange(
+      greaterThanOrEqualDate,
+      lesserThanDate,
+      patientId,
+      employeeId
+    );
+    return makeAppointmentListResponse(appointments);
+  } catch (error) {
+    log.error("error getting appointments by range", error);
+    throw error;
+  }
+}
 
 export async function getAppointmentsByField(
   data: string | number | boolean,
@@ -102,7 +132,7 @@ export async function createAppointment(data: {
   const scheduleIsReserved = await isReserved(
     data.date,
     data.patientId,
-    data.employeeId,
+    data.employeeId
   );
   if (!scheduleIsReserved) {
     try {
@@ -187,13 +217,21 @@ export async function isReserved(
   patientId?: string,
   employeeId?: string,
   appointmentTime?: number
-): Promise<AppointmentDTO | null> {
-  return await searchAppointment(
-    timeDate,
-    patientId,
-    employeeId,
-    appointmentTime
-  );
+): Promise<boolean> {
+  try {
+    const appointment = await searchAppointment(
+      timeDate,
+      patientId,
+      employeeId,
+      appointmentTime
+    );
+    if (appointment) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    throw error;
+  }
 }
 
 function makeAppointmentResponse(appointment: AppointmentDTO): Appointment {

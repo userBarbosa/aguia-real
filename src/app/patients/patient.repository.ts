@@ -18,7 +18,7 @@ export async function list(): Promise<PatientDTO[]> {
     return response;
   } catch (error) {
     throw {
-      message: "error while trying to return all",
+      message: "error while trying to return all patients",
       error,
     };
   }
@@ -38,7 +38,7 @@ export async function listLimit(
     return response;
   } catch (error) {
     throw {
-      message: "error while trying to return all",
+      message: "error while trying to return patients",
       params: { query, limit },
       error,
     };
@@ -48,7 +48,6 @@ export async function listLimit(
 export async function read(id: string): Promise<PatientDTO | null> {
   try {
     const response = await selectById<PatientDTO>(COLLECTION, id);
-
     return response;
   } catch (error) {
     throw {
@@ -127,11 +126,12 @@ export async function store(data: {
       sex: data.sex,
       birthDate: data.birthDate,
       onTreatment: data.onTreatment,
+      createdAt: new Date(),
     });
     return response;
   } catch (error) {
     throw {
-      message: "Error getting patient by field",
+      message: "error creating patient",
       data,
       error,
     };
@@ -140,7 +140,6 @@ export async function store(data: {
 
 export async function update(data: {
   id: string;
-  tutorId: string;
   name?: string;
   bloodType?: string;
   observation?: string;
@@ -152,8 +151,6 @@ export async function update(data: {
 }): Promise<boolean> {
   try {
     const cleanedPatientObject = removingNullValues({
-      id: data.id,
-      tutorId: data.tutorId,
       name: data.name,
       species: data.species,
       sex: data.sex,

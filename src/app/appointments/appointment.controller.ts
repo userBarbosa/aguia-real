@@ -32,7 +32,7 @@ export async function getAppointmentByIdRoute(req: Request, res: Response) {
         SuccessResponse(res, appointment);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Agendamento não encontrado",
+          message: "Agendamento não encontrado",
         });
       }
     }
@@ -73,7 +73,7 @@ export async function getAppointmentsByFieldRoute(req: Request, res: Response) {
         SuccessResponse(res, appointment);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Agendamento não encontrado",
+          message: "Agendamento não encontrado",
         });
       }
     }
@@ -101,7 +101,7 @@ export async function getAppointmentsByForeignIdRoute(
         SuccessResponse(res, appointment);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Agendamento não encontrado",
+          message: "Agendamento não encontrado",
         });
       }
     }
@@ -163,7 +163,7 @@ export async function createAppointmentRoute(req: Request, res: Response) {
         if (id !== "already reserved") {
           SuccessResponse(res, { id });
         } else {
-          const error = { msg: "already reserved" };
+          const error = { message: "already reserved" };
           logger.error("error creating an appointment", error);
           ErrorResponse(res, ErrorType.Forbidden, error);
         }
@@ -190,7 +190,7 @@ export async function updateAppointmentStateRoute(req: Request, res: Response) {
         SuccessResponse(res, true);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error updating appointment state",
+          message: "error updating appointment state",
           appId: id,
         });
       }
@@ -218,7 +218,7 @@ export async function finishAppointment(req: Request, res: Response) {
         SuccessResponse(res, true);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error updating appointment state",
+          message: "error updating appointment state",
           appId: id,
         });
       }
@@ -267,7 +267,7 @@ export async function updateAppointmentRoute(req: Request, res: Response) {
         SuccessResponse(res, true);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error updating appointment",
+          message: "error updating appointment",
           appId: id,
         });
       }
@@ -286,10 +286,10 @@ export async function deleteAppointmentRoute(req: Request, res: Response) {
     } else {
       const deleted = await deleteAppointment(id);
       if (deleted) {
-        SuccessResponse(res, 200);
+        SuccessResponse(res, deleted);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error deleting appointment",
+          message: "error deleting appointment",
           appId: id,
         });
       }
@@ -308,7 +308,7 @@ export async function isReservedRoute(req: Request, res: Response) {
     } else {
       const tratedTimeDate = new Date(timeDate);
       const reserved = await isReserved(tratedTimeDate, patientId, employeeId);
-      SuccessResponse(res, 200);
+      SuccessResponse(res, { reserved });
     }
   } catch (error) {
     logger.error("error getting reserved appointment", error);

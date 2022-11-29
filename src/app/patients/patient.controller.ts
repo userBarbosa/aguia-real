@@ -29,7 +29,7 @@ export async function getPatientByIdRoute(req: Request, res: Response) {
         SuccessResponse(res, patient);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Paciente não encontrado",
+          message: "Paciente não encontrado",
         });
       }
     }
@@ -68,7 +68,7 @@ export async function getPatientsByFieldRoute(req: Request, res: Response) {
         SuccessResponse(res, patient);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Agendamento não encontrado",
+          message: "Agendamento não encontrado",
         });
       }
     }
@@ -91,7 +91,7 @@ export async function getPatientsByTutorRoute(req: Request, res: Response) {
         SuccessResponse(res, patient);
       } else {
         ErrorResponse(res, ErrorType.NotFound, {
-          msg: "Paciente não encontrado",
+          message: "Paciente não encontrado",
         });
       }
     }
@@ -134,7 +134,7 @@ export async function createPatientRoute(req: Request, res: Response) {
         if (id !== "already exists") {
           SuccessResponse(res, { id });
         } else {
-          const error = { msg: "already exists" };
+          const error = { message: "already exists" };
           logger.error("error creating an patient", error);
           ErrorResponse(res, ErrorType.Forbidden, error);
         }
@@ -181,10 +181,10 @@ export async function updatePatientRoute(req: Request, res: Response) {
         onTreatment,
       });
       if (updated) {
-        SuccessResponse(res, 200);
+        SuccessResponse(res, updated);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error updating patient",
+          message: "error updating patient",
           patientId: id,
         });
       }
@@ -203,10 +203,10 @@ export async function deletePatientRoute(req: Request, res: Response) {
     } else {
       const deleted = await deletePatient(id, tutorId);
       if (deleted) {
-        SuccessResponse(res, 200);
+        SuccessResponse(res, deleted);
       } else {
         ErrorResponse(res, ErrorType.InternalServerError, {
-          msg: "error deleting patient",
+          message: "error deleting patient",
           patientId: id,
         });
       }
