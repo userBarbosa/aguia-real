@@ -2,9 +2,16 @@ import {
   swaggerGetPetExample,
   swaggerUpdatePetExample,
   swaggerPetSchemaExample,
-} from "./pets.documentation";
-import { swaggerAddressSchemaExample } from "./users.documentation";
-import { swaggerInsertAppointment, swaggerAppointmentSchema, swaggerDiagnosticSchema, swaggerMedicinePrescriptionSchema, swaggerAppStateEnum, swaggerErrorSchema } from "./appointment.documentation";
+} from "./classes/pets.documentation";
+import { swaggerAddressSchemaExample } from "./classes/users.documentation";
+import {
+  swaggerInsertAppointment,
+  swaggerAppointmentSchema,
+  swaggerDiagnosticSchema,
+  swaggerMedicinePrescriptionSchema,
+  swaggerAppStateEnum,
+  swaggerErrorSchema,
+} from "./classes/appointment.documentation";
 
 const documentation = {
   openapi: "3.0.0",
@@ -38,10 +45,33 @@ const documentation = {
     MedicinePrescription: swaggerMedicinePrescriptionSchema,
     AppState: swaggerAppStateEnum,
     Errors: {
-      NewAppointmentError: swaggerErrorSchema
-    }
+      NewAppointmentError: swaggerErrorSchema,
+    },
     // Pet: swaggerPetSchemaExample,
     // Address: swaggerAddressSchemaExample,
   },
 };
 export default documentation;
+
+
+/* to be added
+"/utilities/health-check": {
+  "get": {
+    "description": "",
+    "parameters": [],
+    "responses": {}
+  }
+},
+"/utilities/health-check/auth": {
+  "get": {
+    "description": "",
+    "parameters": [
+      {
+        "name": "x-api-token",
+        "in": "header",
+        "type": "string"
+      }
+    ],
+    "responses": {}
+  }
+} */
