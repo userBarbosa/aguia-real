@@ -19,6 +19,7 @@ export type User = {
   medicalLicense?: string,
   specialty?: Specialty,
   active?: boolean,
+  emailConfirmed?: Date,
   birthDate?: Date,
 };
 

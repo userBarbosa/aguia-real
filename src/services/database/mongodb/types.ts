@@ -3,7 +3,7 @@ export type GenericDTO = {
   createdAt: string | Date,
   updatedAt: string | Date,
   deletedAt: string | Date,
-  active: number,
+  active: boolean,
 }
 
 export type GenericObject = {

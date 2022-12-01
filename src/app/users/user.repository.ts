@@ -107,7 +107,7 @@ export async function store(data: {
       password: data.password,
       type: data.type,
       createdAt: new Date(),
-      active: 1,
+      active: true,
       phoneNumber: data.phoneNumber,
       documentNumber: data.documentNumber,
       medicalLicense: data.medicalLicense,

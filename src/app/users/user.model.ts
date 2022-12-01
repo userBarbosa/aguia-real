@@ -1,7 +1,6 @@
 import logger from "../../utils/logger";
 import { createHash, validateHash } from "../../utils/crypt";
 import {
-  list,
   listLimit,
   read,
   readByEmail,
@@ -14,7 +13,13 @@ import {
   updatePassword,
   remove,
 } from "./user.repository";
-import { SigninUserResponse, User, UserDTO, UserType } from "./user.types";
+import {
+  SigninUserResponse,
+  Specialty,
+  User,
+  UserDTO,
+  UserType,
+} from "./user.types";
 import { createToken } from "../../utils/token";
 import { TokenUserPayload } from "../../utils/token/types";
 
@@ -23,7 +28,7 @@ export async function getAllUsers(): Promise<User[]> {
     func: "getAllUsers",
   });
   try {
-    const users = await list();
+    const users = await listLimit({}, 50);
 
     return makeUserListResponse(users);
   } catch (error) {
@@ -53,6 +58,10 @@ export async function signinUser(
   email: string,
   password: string
 ): Promise<SigninUserResponse | null> {
+  const log = logger.child({
+    func: "confirmUserEmail",
+    data: { email },
+  });
   try {
     const existingUser = await readByEmail(email);
 
@@ -78,44 +87,68 @@ export async function signinUser(
 
     return {} as SigninUserResponse;
   } catch (error) {
-    logger.error("Error logging user", error);
-  }
-
-  return null;
-}
-
-export async function confirmUserEmail(data: { id: string }): Promise<boolean> {
-  const log = logger.child({
-    func: "users.model.confirmUserEmail",
-    id: data.id,
-  });
-
-  try {
-    const result = await updateEmailConfirm({ ...data, emailConfirm: true });
-
-    if (result) return result;
-    else throw result;
-  } catch (error) {
-    log.error("Error on updating user", { error });
-
+    log.error("Error logging user", error);
     throw error;
   }
 }
 
-export async function getAppointmentsByField(
+export async function confirmUserEmail(id: string): Promise<boolean> {
+  const log = logger.child({
+    func: "confirmUserEmail",
+    data: { id },
+  });
+
+  try {
+    const emailConfirm = new Date();
+    const result = await updateEmailConfirmedState(id, emailConfirm);
+
+    if (result) return result;
+    else throw result;
+  } catch (error) {
+    log.error("error on updating user", { error });
+    throw error;
+  }
+}
+
+export async function getUsersByField(
   data: string | number | boolean,
   field: string
 ): Promise<User[] | null> {
-  const users = await readByField(data, field, 50);
+  const log = logger.child({
+    func: "getUsersByField",
+    data: { data, field },
+  });
 
-  if (users) {
-    return makeUserListResponse(users);
+  try {
+    const users = await readByField(data, field, 50);
+
+    if (users) {
+      return makeUserListResponse(users);
+    }
+    return null;
+  } catch (error) {
+    log.error("error getting user by field", { error });
+    throw error;
   }
-  return null;
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {
-  return null;
+  const log = logger.child({
+    func: "getUserByEmail",
+    data: { email },
+  });
+
+  try {
+    const user = await readByEmail(email);
+
+    if (user) {
+      return makeUserResponse(user);
+    }
+    return null;
+  } catch (error) {
+    log.error("error getting user by field", { error });
+    throw error;
+  }
 }
 
 export async function getUserToken(
@@ -124,8 +157,7 @@ export async function getUserToken(
 ): Promise<string> {
   const log = logger.child({
     func: "users.model.getUserToken",
-    user,
-    expMilli,
+    data: { user, expMilli },
   });
 
   try {
@@ -138,11 +170,9 @@ export async function getUserToken(
     };
 
     const token = await createToken(tokenUserPayload, { exp: expMilli });
-
     return token;
   } catch (error) {
-    log.error("Error on getting user token", { error });
-
+    log.error("error on getting user token", { error });
     throw error;
   }
 }
@@ -153,8 +183,13 @@ export async function createUser(data: {
   password: string;
   type: UserType;
 }): Promise<string | null> {
+  const log = logger.child({
+    func: "createUser",
+    data,
+  });
+
   try {
-    const existingUser = await readByEmail({ email: data.email });
+    const existingUser = await readByEmail(data.email);
 
     if (existingUser) {
       return "existing";
@@ -165,63 +200,97 @@ export async function createUser(data: {
       return response;
     }
   } catch (error) {
-    logger.error("Error creating user", error);
+    log.error("error creating user", error);
+    throw error;
   }
-
-  return null;
 }
 
 export async function updateUser(data: {
   id: string;
-  name: string;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  documentNumber?: string;
+  medicalLicense?: string;
+  specialty?: Specialty;
+  birthDate?: Date;
 }): Promise<boolean> {
+  const log = logger.child({
+    func: "updateUser",
+    data,
+  });
   try {
-    return await update(data);
+    const ok = await update(data);
+    return ok;
   } catch (error) {
-    logger.error("Error updating user", error);
+    log.error("error updating user", error);
+    throw error;
   }
-
-  return false;
 }
 
-export async function updateUserType(data: {
-  id: string;
-  type: UserType;
-}): Promise<boolean> {
+export async function updateUserActiveState(
+  id: string,
+  active: boolean
+): Promise<boolean> {
+  const log = logger.child({
+    func: "updateUserActiveState",
+    data: { id, active },
+  });
   try {
-    return await updateType(data);
+    const ok = await updateActiveState(id, active);
+    return ok;
   } catch (error) {
-    logger.error("Error updating user type", error);
+    log.error("error updating user", error);
+    throw error;
   }
-
-  return false;
 }
 
-export async function updateUserPassword(data: {
-  id: string;
-  password: string;
-}): Promise<boolean> {
+export async function updateUserType(
+  id: string,
+  type: UserType
+): Promise<boolean> {
+  const log = logger.child({
+    func: "updateUserType",
+    data: { id, type },
+  });
   try {
-    return await updatePassword(data);
+    const ok = await updateType(id, type);
+    return ok;
   } catch (error) {
-    logger.error("Error updating user password", error);
+    log.error("error updating user type", error);
+    throw error;
   }
-
-  return false;
 }
 
-export async function removeUser(data: { id: string }): Promise<boolean> {
+export async function updateUserPassword(
+  id: string,
+  password: string
+): Promise<boolean> {
+  const log = logger.child({
+    func: "updateUserPassword",
+    data: { id },
+  });
   try {
-    return await remove(data);
+    const ok = await updatePassword(id, password);
+    return ok;
   } catch (error) {
-    logger.error("Error removing user", error);
+    log.error("error updating user password", error);
+    throw error;
   }
-
-  return false;
 }
 
-function makeUserListResponse(users: UserDTO[]): User[] {
-  return users.map<User>((user) => makeUserResponse(user));
+export async function removeUser(id: string): Promise<boolean> {
+  const log = logger.child({
+    func: "removeUser",
+    data: { id },
+  });
+  try {
+    const ok = await remove(id);
+    return ok;
+  } catch (error) {
+    log.error("error removing user", error);
+    throw error;
+  }
 }
 
 function makeUserResponse(user: UserDTO): User {
@@ -230,5 +299,16 @@ function makeUserResponse(user: UserDTO): User {
     name: user.name,
     email: user.email,
     type: user.type,
+    emailConfirmed: user.emailConfirmed,
+    phoneNumber: user.phoneNumber,
+    documentNumber: user.documentNumber,
+    medicalLicense: user.medicalLicense,
+    specialty: user.specialty,
+    active: user.active,
+    birthDate: user.birthDate,
   };
+}
+
+function makeUserListResponse(users: UserDTO[]): User[] {
+  return users.map<User>((user) => makeUserResponse(user));
 }
