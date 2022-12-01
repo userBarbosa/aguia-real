@@ -1,17 +1,12 @@
 import {
-  swaggerGetPetExample,
-  swaggerUpdatePetExample,
-  swaggerPetSchemaExample,
-} from "./classes/pets.documentation";
-import { swaggerAddressSchemaExample } from "./classes/users.documentation";
-import {
-  swaggerInsertAppointment,
-  swaggerAppointmentSchema,
-  swaggerDiagnosticSchema,
-  swaggerMedicinePrescriptionSchema,
-  swaggerAppStateEnum,
-  swaggerErrorSchema,
+  appointmentsSwaggerDocumentation,
+  appointmentsSwaggerDefinitions,
 } from "./classes/appointment.documentation";
+import {
+  utilitiesSwaggerDefinitions,
+  utilitiesSwaggerDocumentation,
+  utilitiesSecurityDefinition,
+} from "./classes/utilities.documentation";
 
 const documentation = {
   openapi: "3.0.0",
@@ -20,6 +15,7 @@ const documentation = {
     description: "",
     version: "0.0.1",
   },
+  schemes: ["https"],
   servers: [
     {
       url: "http://localhost:3001/",
@@ -31,47 +27,15 @@ const documentation = {
     },
   ],
   paths: {
-    // "/pets": {
-    //   "get": swaggerGetPetExample,
-    //   "put": swaggerUpdatePetExample
-    // },
-    "/appointments/new": {
-      post: swaggerInsertAppointment,
-    },
+    ...appointmentsSwaggerDocumentation,
+    ...utilitiesSwaggerDocumentation,
   },
   definitions: {
-    Appointment: swaggerAppointmentSchema,
-    Diagnostic: swaggerDiagnosticSchema,
-    MedicinePrescription: swaggerMedicinePrescriptionSchema,
-    AppState: swaggerAppStateEnum,
-    Errors: {
-      NewAppointmentError: swaggerErrorSchema,
-    },
-    // Pet: swaggerPetSchemaExample,
-    // Address: swaggerAddressSchemaExample,
+    ...appointmentsSwaggerDefinitions,
+    ...utilitiesSwaggerDefinitions,
+  },
+  securityDefinitions: {
+    ...utilitiesSecurityDefinition,
   },
 };
 export default documentation;
-
-
-/* to be added
-"/utilities/health-check": {
-  "get": {
-    "description": "",
-    "parameters": [],
-    "responses": {}
-  }
-},
-"/utilities/health-check/auth": {
-  "get": {
-    "description": "",
-    "parameters": [
-      {
-        "name": "x-api-token",
-        "in": "header",
-        "type": "string"
-      }
-    ],
-    "responses": {}
-  }
-} */

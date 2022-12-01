@@ -1,14 +1,9 @@
-export const swaggerInsertAppointment = {
+const swaggerInsertAppointment = {
   tags: ["Appointments"],
   summary: "New Appointment",
   operationId: "insertAppointment",
   description: "Insert an new appointment",
   parameters: [
-    {
-      name: "x-api-token",
-      in: "header",
-      type: "string",
-    },
     {
       name: "body",
       in: "body",
@@ -28,32 +23,42 @@ export const swaggerInsertAppointment = {
               id: {
                 type: "string",
                 format: "ObjectId",
-                description: "Created appointment ID"
-              }
-            }
-          }
+                description: "Created appointment ID",
+              },
+            },
+          },
         },
       },
     },
     "403": {
-      $ref: "#/definitions/Errors/NewAppointmentError"
+      $ref: "#/definitions/Errors/NewAppointmentError",
     },
     "500": {
-      $ref: "#/definitions/Errors/NewAppointmentError"
+      $ref: "#/definitions/Errors/NewAppointmentError",
     },
   },
-  securityDefinitions: {
-    Bearer: {
-      type: "apiKey",
-      name: "Authorization",
-      in: "header",
-      description: "JWT Authorization header using the Bearer scheme.",
-    },
-  },
-  security: [],
+  security: [{ api_key: ["write:appointments"] }],
 };
 
-export const swaggerAppointmentSchema = {
+const swaggerGetAllAppointments = {
+  tags: ["Appointments"],
+  summary: "Get all appointments",
+  operationId: "getAllAppointments",
+  description: "Read all appointments",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:appointments"],
+    },
+  ],
+};
+
+const swaggerAppointmentSchema = {
   type: "object",
   required: true,
   properties: {
@@ -106,7 +111,7 @@ export const swaggerAppointmentSchema = {
   },
 };
 
-export const swaggerDiagnosticSchema = {
+const swaggerDiagnosticSchema = {
   type: "object",
   // required: [
   //   "exam",
@@ -138,7 +143,7 @@ export const swaggerDiagnosticSchema = {
   },
 };
 
-export const swaggerMedicinePrescriptionSchema = {
+const swaggerMedicinePrescriptionSchema = {
   type: "array",
   description: "List of prescripted medicines",
   items: {
@@ -160,7 +165,7 @@ export const swaggerMedicinePrescriptionSchema = {
   },
 };
 
-export const swaggerAppStateEnum = {
+const swaggerAppStateEnum = {
   in: "query",
   type: "integer",
   enum: [1, 2, 4, 8, 16, 32, 64],
@@ -168,45 +173,210 @@ export const swaggerAppStateEnum = {
     "1: draft,\n2: registered,\n4: scheduled,\n8: closed,\n16: canceled,\n32: paid,\n64: deleted",
 };
 
-export const swaggerErrorSchema = {
-  description: "Error at appointment creation.",
-  content: {
-    "application/json": {
-      schema: {
-        type: "object",
-        properties: {
-          error: {
-            type: "string",
-            description: "Error message"
-          }
-        }
-      }
+export const appointmentsSwaggerDefinitions = {
+  Appointment: swaggerAppointmentSchema,
+  Diagnostic: swaggerDiagnosticSchema,
+  MedicinePrescription: swaggerMedicinePrescriptionSchema,
+  AppState: swaggerAppStateEnum,
+};
+
+export const appointmentsSwaggerDocumentation = {
+  "/appointments/all": {
+    get: swaggerGetAllAppointments,
+  },
+  "/appointments/field": {
+    get: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/foreignid": {
+    get: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/daterange": {
+    get: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/isreserved": {
+    get: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/{id}": {
+    get: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+    put: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+    delete: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/new": {
+    post: swaggerInsertAppointment,
+  },
+  "/appointments/{id}/state": {
+    patch: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/{id}/observation": {
+    patch: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
+    },
+  },
+  "/appointments/{id}/finish": {
+    put: {
+      tags: ["Appointments"],
+      summary: "",
+      operationId: "",
+      description: "",
+      parameters: [],
+      responses: {
+        default: {
+          description: "Default response.",
+        },
+      },
+      security: [
+        {
+          api_key: ["any:appointments"],
+        },
+      ],
     },
   },
 };
 
-
 /* 
 to be added:
-
-"/appointments/all": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "x-api-token",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "req",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {}
-      }
-    },
     "/appointments/field": {
       "get": {
         "description": "",
