@@ -153,7 +153,7 @@ const swaggerMedicinePrescriptionSchema = {
         description: "Medicine name",
         type: "string",
       },
-      dose: {
+      dosage: {
         description: "How much the pet should take per hour",
         type: "string",
       },

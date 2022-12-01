@@ -1,186 +1,315 @@
 //https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#serverObject
 
 const swaggerGetPetExample = {
-  "tags": ["pets"],
-  "description": "Returns pets based on ID",
-  "summary": "Find pets by ID",
-  "operationId": "getPetsById",
-  "responses": {
+  tags: ["pets"],
+  description: "Returns pets based on ID",
+  summary: "Find pets by ID",
+  operationId: "getPetsById",
+  responses: {
     "200": {
-      "description": "pet response",
-      "content": {
+      description: "pet response",
+      content: {
         "*/*": {
-          "schema": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Pet"
-            }
-          }
-        }
-      }
-    },
-    "default": {
-      "description": "error payload",
-      "content": {
-        "text/html": {
-          "schema": {
-            "$ref": "#/components/schemas/ErrorModel"
-          }
-        }
-      }
-    }
-  },
-  "parameters": [
-    {
-      "name": "id",
-      "in": "path",
-      "description": "ID of pet to use",
-      "required": true,
-      "schema": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
+          schema: {
+            type: "array",
+            items: {
+              $ref: "#/components/schemas/Pet",
+            },
+          },
+        },
       },
-      "style": "simple"
-    }
-  ]
-}
+    },
+    default: {
+      description: "error payload",
+      content: {
+        "text/html": {
+          schema: {
+            $ref: "#/components/schemas/ErrorModel",
+          },
+        },
+      },
+    },
+  },
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      description: "ID of pet to use",
+      required: true,
+      schema: {
+        type: "array",
+        items: {
+          type: "string",
+        },
+      },
+      style: "simple",
+    },
+  ],
+};
 
 const swaggerUpdatePetExample = {
-  "tags": [
-    "pets"
-  ],
-  "summary": "Updates a pet in the store with form data",
-  "operationId": "updatePetWithForm",
-  "parameters": [
+  tags: ["pets"],
+  summary: "Updates a pet in the store with form data",
+  operationId: "updatePetWithForm",
+  parameters: [
     {
-      "name": "petId",
-      "in": "path",
-      "description": "ID of pet that needs to be updated",
-      "required": true,
-      "schema": {
-        "type": "string"
-      }
-    }
+      name: "petId",
+      in: "path",
+      description: "ID of pet that needs to be updated",
+      required: true,
+      schema: {
+        type: "string",
+      },
+    },
   ],
-  "requestBody": {
-    "content": {
+  requestBody: {
+    content: {
       "application/x-www-form-urlencoded": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "description": "Updated name of the pet",
-              "type": "string"
+        schema: {
+          type: "object",
+          properties: {
+            name: {
+              description: "Updated name of the pet",
+              type: "string",
             },
-            "status": {
-              "description": "Updated status of the pet",
-              "type": "string"
-            }
+            status: {
+              description: "Updated status of the pet",
+              type: "string",
+            },
           },
-          "required": ["status"]
-        }
-      }
-    }
+          required: ["status"],
+        },
+      },
+    },
   },
-  "responses": {
+  responses: {
     "200": {
-      "description": "Pet updated.",
-      "content": {
+      description: "Pet updated.",
+      content: {
         "application/json": {},
-        "application/xml": {}
-      }
+        "application/xml": {},
+      },
     },
     "405": {
-      "description": "Method Not Allowed",
-      "content": {
+      description: "Method Not Allowed",
+      content: {
         "application/json": {},
-        "application/xml": {}
-      }
-    }
+        "application/xml": {},
+      },
+    },
   },
-  "security": [
+  security: [
     {
-      "petstore_auth": [
-        "write:pets",
-        "read:pets"
-      ]
-    }
-  ]
-}
+      petstore_auth: ["write:pets", "read:pets"],
+    },
+  ],
+};
 
 const swaggerPetSchemaExample = {
-  "type": "object",
-  "required": [
-    "name",
-    "photoUrls"
-  ],
-  "properties": {
-    "id": {
-      "type": "integer",
-      "format": "int64"
+  type: "object",
+  required: ["name", "photoUrls"],
+  properties: {
+    id: {
+      type: "integer",
+      format: "int64",
     },
-    "category": {
-      "$ref": "#/definitions/Category"
+    category: {
+      $ref: "#/definitions/Category",
     },
-    "name": {
-      "type": "string",
-      "example": "doggie"
+    name: {
+      type: "string",
+      example: "doggie",
     },
-    "photoUrls": {
-      "type": "array",
-      "xml": {
-        "wrapped": true
+    photoUrls: {
+      type: "array",
+      xml: {
+        wrapped: true,
       },
-      "items": {
-        "type": "string",
-        "xml": {
-          "name": "photoUrl"
-        }
-      }
-    },
-    "tags": {
-      "type": "array",
-      "xml": {
-        "wrapped": true
-      },
-      "items": {
-        "xml": {
-          "name": "tag"
+      items: {
+        type: "string",
+        xml: {
+          name: "photoUrl",
         },
-        "$ref": "#/definitions/Tag"
-      }
+      },
     },
-    "status": {
-      "type": "string",
-      "description": "pet status in the store",
-      "enum": [
-        "available",
-        "pending",
-        "sold"
-      ]
-    }
+    tags: {
+      type: "array",
+      xml: {
+        wrapped: true,
+      },
+      items: {
+        xml: {
+          name: "tag",
+        },
+        $ref: "#/definitions/Tag",
+      },
+    },
+    status: {
+      type: "string",
+      description: "pet status in the store",
+      enum: ["available", "pending", "sold"],
+    },
   },
-  "xml": {
-    "name": "Pet"
-  }
-}
+  xml: {
+    name: "Pet",
+  },
+};
 
-export { swaggerGetPetExample, swaggerUpdatePetExample, swaggerPetSchemaExample }
+const getAllPatientsRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
 
+const getPatientsByFieldRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
 
+const getPatientsByTutorRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
+
+const getPatientByIdRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
+
+const updatePatientRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
+
+const deletePatientRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
+
+const createPatientRoute = {
+  tags: ["Patients"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:patients"],
+    },
+  ],
+};
+
+const swaggerSpeciesEnum = {};
+const swaggerAllergyEnum = {};
+const swaggerSexEnum = {};
+
+export const patientsSwaggerDefinitions = {
+  Species: swaggerSpeciesEnum,
+  Allergy: swaggerAllergyEnum,
+  Sex: swaggerSexEnum,
+};
+
+export const patientsSwaggerDocumentation = {
+  "/patients/all": { get: getAllPatientsRoute },
+  "/patients/field": { get: getPatientsByFieldRoute },
+  "/patients/tutor/:tutor": { get: getPatientsByTutorRoute },
+  "/patients/:id": {
+    get: getPatientByIdRoute,
+    put: updatePatientRoute,
+    delete: deletePatientRoute,
+  },
+  "/patients/new": { post: createPatientRoute },
+};
+
+// export { swaggerGetPetExample, swaggerUpdatePetExample, swaggerPetSchemaExample }
 
 /* to be added
 "/patient/all": {
       "get": {
         "description": "",
         "parameters": [
-          {
-            "name": "x-api-token",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "req",
             "in": "query",
@@ -194,11 +323,6 @@ export { swaggerGetPetExample, swaggerUpdatePetExample, swaggerPetSchemaExample 
       "get": {
         "description": "",
         "parameters": [
-          {
-            "name": "x-api-token",
-            "in": "header",
-            "type": "string"
-          },
           {
             "name": "data",
             "in": "query",
@@ -257,11 +381,6 @@ export { swaggerGetPetExample, swaggerUpdatePetExample, swaggerPetSchemaExample 
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "x-api-token",
-            "in": "header",
             "type": "string"
           },
           {
@@ -325,11 +444,7 @@ export { swaggerGetPetExample, swaggerUpdatePetExample, swaggerPetSchemaExample 
       "post": {
         "description": "",
         "parameters": [
-          {
-            "name": "x-api-token",
-            "in": "header",
-            "type": "string"
-          },
+          
           {
             "name": "body",
             "in": "body",

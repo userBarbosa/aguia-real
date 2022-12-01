@@ -3,6 +3,18 @@ import {
   appointmentsSwaggerDefinitions,
 } from "./classes/appointment.documentation";
 import {
+  usersSwaggerDocumentation,
+  usersSwaggerDefinitions,
+} from "./classes/users.documentation";
+import {
+  patientsSwaggerDocumentation,
+  patientsSwaggerDefinitions,
+} from "./classes/pets.documentation";
+import {
+  tutorsSwaggerDocumentation,
+  tutorsSwaggerDefinitions,
+} from "./classes/tutor.documentation";
+import {
   utilitiesSwaggerDefinitions,
   utilitiesSwaggerDocumentation,
   utilitiesSecurityDefinition,
@@ -27,10 +39,16 @@ const documentation = {
     },
   ],
   paths: {
+    ...usersSwaggerDocumentation,
+    ...tutorsSwaggerDocumentation,
+    ...patientsSwaggerDocumentation,
     ...appointmentsSwaggerDocumentation,
     ...utilitiesSwaggerDocumentation,
   },
   definitions: {
+    ...usersSwaggerDefinitions,
+    ...tutorsSwaggerDefinitions,
+    ...patientsSwaggerDefinitions,
     ...appointmentsSwaggerDefinitions,
     ...utilitiesSwaggerDefinitions,
   },
@@ -38,4 +56,5 @@ const documentation = {
     ...utilitiesSecurityDefinition,
   },
 };
+
 export default documentation;

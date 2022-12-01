@@ -1,24 +1,285 @@
-// https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#schemaObject
-
-export const swaggerAddressSchemaExample = {
-  "type": "object",
-  "required": [
-    "name"
+const confirmAccountRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
   ],
-  "properties": {
-    "name": {
-      "type": "string"
+};
+
+const getUserByEmailRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
     },
-    "address": {
-      "type": "string"
+  },
+  security: [
+    {
+      api_key: ["read:users"],
     },
-    "age": {
-      "type": "integer",
-      "format": "int32",
-      "minimum": 0
-    }
-  }
-}
+  ],
+};
+
+const getUsersByFieldRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const getUserByIdRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const getAllUsersRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const createUserRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const signinUserRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const requestNewPasswordRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const resetPasswordRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const updateUserTypeRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const updateUserActiveStateRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const updateUserPasswordRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const updateUserRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const removeUserRoute = {
+  tags: ["Users"],
+  summary: "",
+  operationId: "",
+  description: "",
+  parameters: [],
+  responses: {
+    default: {
+      description: "Default response.",
+    },
+  },
+  security: [
+    {
+      api_key: ["read:users"],
+    },
+  ],
+};
+
+const swaggerSpecialtyEnum = {
+  in: "query",
+  type: "integer",
+  enum: [1, 2, 4, 8, 16, 32, 64, 128, 256],
+  description:
+    "1: cat,\n2: dog,\n4: bird,\n8: fish,\n16: rodent,\n32: reptile,\n64: wild,\n128: farm,\n256: marine",
+};
+
+export const usersSwaggerDefinitions = {
+  Specialty: swaggerSpecialtyEnum,
+};
+
+export const usersSwaggerDocumentation = {
+  "/users/confirmaccount": { get: confirmAccountRoute },
+  "/users/email": { get: getUserByEmailRoute },
+  "/users/field": { get: getUsersByFieldRoute },
+  "/users/:id": {
+    get: getUserByIdRoute,
+    patch: updateUserRoute,
+    delete: removeUserRoute,
+  },
+  "/users/": { get: getAllUsersRoute },
+  "/users/signup": { post: createUserRoute },
+  "/users/signin": { post: signinUserRoute },
+  "/users/requestnewpassword": { post: requestNewPasswordRoute },
+  "/users/resetpassword": { post: resetPasswordRoute },
+  "/users/:id/type": { patch: updateUserTypeRoute },
+  "/users/:id/active": { patch: updateUserActiveStateRoute },
+  "/users/:id/password": { patch: updateUserPasswordRoute },
+};
 
 // getUserByIdRoute
 // getAllUsersRoute
@@ -29,8 +290,6 @@ export const swaggerAddressSchemaExample = {
 // updateUserPasswordRoute
 // updateUserRoute
 // removeUserRoute
-
-
 
 /* to be added
 "/users/confirmaccount": {
@@ -50,11 +309,7 @@ export const swaggerAddressSchemaExample = {
       "get": {
         "description": "",
         "parameters": [
-          {
-            "name": "x-api-token",
-            "in": "header",
-            "type": "string"
-          },
+          
           {
             "name": "email",
             "in": "query",
@@ -68,11 +323,7 @@ export const swaggerAddressSchemaExample = {
       "get": {
         "description": "",
         "parameters": [
-          {
-            "name": "x-api-token",
-            "in": "header",
-            "type": "string"
-          },
+          
           {
             "name": "data",
             "in": "query",
