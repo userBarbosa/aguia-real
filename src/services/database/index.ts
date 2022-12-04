@@ -49,6 +49,34 @@ export async function updateOne(
   return await update(source, filter, { $set: content });
 }
 
+export async function pushOne(
+  source: string,
+  filter: Record<string, unknown>,
+  contentPush: Record<string, unknown>,
+  contentSet: Record<string, unknown>
+): Promise<boolean> {
+  return await update(
+    source,
+    filter,
+    { $push: contentPush },
+    { $set: contentSet }
+  );
+}
+
+export async function pullOne(
+  source: string,
+  filter: Record<string, unknown>,
+  contentPull: Record<string, unknown>,
+  contentSet: Record<string, unknown>
+): Promise<boolean> {
+  return await update(
+    source,
+    filter,
+    { $push: contentPull },
+    { $set: contentSet }
+  );
+}
+
 export async function removeOne(
   source: string,
   filter: Record<string, unknown>

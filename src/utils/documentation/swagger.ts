@@ -1,10 +1,24 @@
 import {
-  swaggerGetPetExample,
-  swaggerUpdatePetExample,
-  swaggerPetSchemaExample,
-} from "./pets.documentation";
-import { swaggerAddressSchemaExample } from "./users.documentation";
-import { swaggerInsertAppointment, swaggerAppointmentSchema, swaggerDiagnosticSchema, swaggerMedicinePrescriptionSchema, swaggerAppStateEnum, swaggerErrorSchema } from "./appointment.documentation";
+  appointmentsSwaggerDocumentation,
+  appointmentsSwaggerDefinitions,
+} from "./classes/appointment.documentation";
+import {
+  usersSwaggerDocumentation,
+  usersSwaggerDefinitions,
+} from "./classes/users.documentation";
+import {
+  patientsSwaggerDocumentation,
+  patientsSwaggerDefinitions,
+} from "./classes/pets.documentation";
+import {
+  tutorsSwaggerDocumentation,
+  tutorsSwaggerDefinitions,
+} from "./classes/tutor.documentation";
+import {
+  utilitiesSwaggerDefinitions,
+  utilitiesSwaggerDocumentation,
+  utilitiesSecurityDefinition,
+} from "./classes/utilities.documentation";
 
 const documentation = {
   openapi: "3.0.0",
@@ -13,6 +27,7 @@ const documentation = {
     description: "",
     version: "0.0.1",
   },
+  schemes: ["https"],
   servers: [
     {
       url: "http://localhost:3001/",
@@ -24,24 +39,22 @@ const documentation = {
     },
   ],
   paths: {
-    // "/pets": {
-    //   "get": swaggerGetPetExample,
-    //   "put": swaggerUpdatePetExample
-    // },
-    "/appointments/new": {
-      post: swaggerInsertAppointment,
-    },
+    ...usersSwaggerDocumentation,
+    ...tutorsSwaggerDocumentation,
+    ...patientsSwaggerDocumentation,
+    ...appointmentsSwaggerDocumentation,
+    ...utilitiesSwaggerDocumentation,
   },
   definitions: {
-    Appointment: swaggerAppointmentSchema,
-    Diagnostic: swaggerDiagnosticSchema,
-    MedicinePrescription: swaggerMedicinePrescriptionSchema,
-    AppState: swaggerAppStateEnum,
-    Errors: {
-      NewAppointmentError: swaggerErrorSchema
-    }
-    // Pet: swaggerPetSchemaExample,
-    // Address: swaggerAddressSchemaExample,
+    ...usersSwaggerDefinitions,
+    ...tutorsSwaggerDefinitions,
+    ...patientsSwaggerDefinitions,
+    ...appointmentsSwaggerDefinitions,
+    ...utilitiesSwaggerDefinitions,
+  },
+  securityDefinitions: {
+    ...utilitiesSecurityDefinition,
   },
 };
+
 export default documentation;

@@ -16,3 +16,13 @@ export function translateData(data: string): number | string | boolean {
     return data;
   }
 }
+
+export function removingNullValues(objectToClean: Record<string, any>) : Object {
+  let cleanedObject: Record<string, any> = {};
+  Object.keys(objectToClean).forEach(key => {
+    if (objectToClean[key] !== null) {
+      cleanedObject[key] = objectToClean[key];
+    }
+  })
+  return cleanedObject;
+}

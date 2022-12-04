@@ -1,6 +1,14 @@
 import { Router } from "express";
 import { validateTokenMiddleware } from "../../utils/token";
-import { getPatientByIdRoute } from "./patient.controller";
+import {
+  getPatientByIdRoute,
+  getAllPatientsRoute,
+  getPatientsByFieldRoute,
+  getPatientsByTutorRoute,
+  createPatientRoute,
+  updatePatientRoute,
+  deletePatientRoute,
+} from "./patient.controller";
 
 const patientRouter = Router();
 const basePath = "/patient";
@@ -8,17 +16,17 @@ const basePath = "/patient";
 patientRouter.get(
   `${basePath}/all`,
   validateTokenMiddleware,
-  getPatientByIdRoute
+  getAllPatientsRoute
 );
 patientRouter.get(
   `${basePath}/field`,
   validateTokenMiddleware,
-  getPatientByIdRoute
+  getPatientsByFieldRoute
 );
 patientRouter.get(
   `${basePath}/tutor/:tutor`,
   validateTokenMiddleware,
-  getPatientByIdRoute
+  getPatientsByTutorRoute
 );
 patientRouter.get(
   `${basePath}/:id`,
@@ -29,19 +37,19 @@ patientRouter.get(
 patientRouter.post(
   `${basePath}/new`,
   validateTokenMiddleware,
-  getPatientByIdRoute
+  createPatientRoute
 );
 
-patientRouter.patch(
-  `${basePath}/:id/observation`,
+patientRouter.put(
+  `${basePath}/:id`,
   validateTokenMiddleware,
-  getPatientByIdRoute
+  updatePatientRoute
 );
 
 patientRouter.delete(
   `${basePath}/:id`,
   validateTokenMiddleware,
-  getPatientByIdRoute
+  deletePatientRoute
 );
 
 export default patientRouter;

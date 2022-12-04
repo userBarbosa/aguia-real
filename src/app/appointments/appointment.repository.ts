@@ -14,7 +14,6 @@ import {
   PaymentMethod,
   Reason,
 } from "./appointment.types";
-import logger from "../../utils/logger";
 import { ObjectId } from "mongodb";
 
 const COLLECTION = "appointments";
@@ -25,9 +24,11 @@ export async function list(): Promise<AppointmentDTO[]> {
 
     return response;
   } catch (error) {
-    logger.error("Error getting all appointments", error);
+    throw {
+      message: "error while trying to list appointments",
+      error,
+    };
   }
-  return [];
 }
 
 export async function listLimit(
@@ -43,20 +44,24 @@ export async function listLimit(
 
     return response;
   } catch (error) {
-    logger.error("Error getting all appointments", error);
+    throw {
+      message: "error while trying to list limited appointments",
+      error,
+    };
   }
-  return [];
 }
 
 export async function read(id: string): Promise<AppointmentDTO | null> {
   try {
     const response = await selectById<AppointmentDTO>(COLLECTION, id);
-
     return response;
   } catch (error) {
-    logger.error("Error getting appointment by id", error);
+    throw {
+      message: "error while trying to read appointment",
+      id,
+      error,
+    };
   }
-  return null;
 }
 
 export async function readByForeignId(
@@ -76,26 +81,12 @@ export async function readByForeignId(
 
     return response;
   } catch (error) {
-    /* const getErrorObject = (error) =>
-  Object.getOwnPropertyNames(error).reduce((acc, curr) => {
-    acc[curr] = error[curr];
-    return acc;
-  }, {});
-
-getErrorObject(newError);
- */
-
-    if (error instanceof Error && error.stack) {
-      for (const property of Object.getOwnPropertyNames(error)) {
-      }
-    }
-    logger.error("Error getting appointment by id", error);
     throw {
-      message: "Error getting appointment by id",
+      message: "error while trying to read appointment by foreign id",
+      params: { field, id, limit },
       error,
     };
   }
-  // return [];
 }
 
 export async function readByField(
@@ -115,40 +106,98 @@ export async function readByField(
 
     return response;
   } catch (error) {
-    logger.error("Error getting appointment by field", error);
+    throw {
+      message: "error while trying to read appointment by field",
+      params: { field, data, limit },
+      error,
+    };
   }
-  return [];
+}
+
+export async function readByDateRange(
+  greaterThanOrEqualDate: Date,
+  lesserThanDate: Date,
+  patientId?: string,
+  employeeId?: string,
+  limit?: number
+): Promise<AppointmentDTO[]> {
+  try {
+    let query: Record<string, any> = {
+      date: {
+        $gte: greaterThanOrEqualDate,
+        $lt: lesserThanDate,
+      },
+    };
+    if (patientId) {
+      query["patientId"] = new ObjectId(patientId);
+    }
+    if (employeeId) {
+      query["employeeId"] = new ObjectId(employeeId);
+    }
+
+    const result = await selectWithLimit<AppointmentDTO>(
+      COLLECTION,
+      query,
+      limit || 50
+    );
+
+    return result;
+  } catch (error) {
+    throw {
+      message: "an error occour while getting appointments by date",
+      error,
+      params: {
+        greaterThanOrEqualDate,
+        lesserThanDate,
+        patientId,
+        employeeId,
+        limit,
+      },
+    };
+  }
 }
 
 export async function searchAppointment(
-  patientId: string,
-  employeeId: string,
   timeDate: Date,
+  patientId?: string,
+  employeeId?: string,
   appointmentTime?: number
-): Promise<boolean> {
+): Promise<AppointmentDTO | null> {
   try {
     const gteDate = timeDate;
     const ltDate = new Date(
       timeDate.getTime() + (appointmentTime || 30 * 60 * 1000)
     );
-    const data = {
-      patientId: new ObjectId(patientId),
-      employeeId: new ObjectId(employeeId),
+    let data: Record<string, any> = {
       date: {
         $gte: gteDate,
         $lt: ltDate,
       },
     };
+    if (patientId) {
+      data["patientId"] = new ObjectId(patientId);
+    } else if (employeeId) {
+      data["employeeId"] = new ObjectId(employeeId);
+    } else {
+      throw {
+        error: "missing required property",
+      };
+    }
 
     const result = await select<AppointmentDTO>(COLLECTION, data);
-
-    if (result) {
-      return true;
-    }
+    return result;
   } catch (error) {
-    logger.error("error finding reserved appointment", error);
+    throw {
+      message: "error finding reserved appointment",
+      error,
+      params: {
+        timeDate,
+        patientId,
+        employeeId,
+        appointmentTime,
+      },
+    };
   }
-  return false;
 }
 
 export async function store(data: {
@@ -180,10 +229,8 @@ export async function store(data: {
 
     return response;
   } catch (error) {
-    logger.error("error while storing data", { error, data });
-    // should throw ?
     throw {
-      message: "error while storing data",
+      message: "error while storing appointment",
       error,
       data,
     };
@@ -217,8 +264,11 @@ export async function update(data: {
     );
     return response;
   } catch (error) {
-    logger.error("error while updating data", { error, data });
-    throw error;
+    throw {
+      message: "error while updating data",
+      data,
+      error,
+    };
   }
 }
 
@@ -237,8 +287,11 @@ export async function updateState(
     );
     return response;
   } catch (error) {
-    logger.error("error while updating data", { error, id, appointmentState });
-    throw error;
+    throw {
+      message: "error while updating data",
+      data: { id, appointmentState },
+      error,
+    };
   }
 }
 
@@ -259,8 +312,11 @@ export async function insertDiagnostic(data: {
     );
     return response;
   } catch (error) {
-    logger.error("error while updating data", { error, data });
-    throw error;
+    throw {
+      message: "error while updating data",
+      data,
+      error,
+    };
   }
 }
 
@@ -269,7 +325,10 @@ export async function remove(id: string): Promise<boolean> {
     const response = await removeOne(COLLECTION, { _id: new ObjectId(id) });
     return response;
   } catch (error) {
-    logger.error("error while removing data", { error, id });
-    throw error;
+    throw {
+      message: "error while removing data",
+      error,
+      id,
+    };
   }
 }

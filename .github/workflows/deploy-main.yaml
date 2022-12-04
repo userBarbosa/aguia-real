@@ -24,6 +24,7 @@ jobs:
         run: |
           npm install
           npm run build
+          cp Dockerfile ./dist
    
       - name: Publishing on EC2
         run: |

@@ -4,11 +4,12 @@ import {
   selectById,
   selectWithLimit,
   updateOne,
-  removeOne
+  removeOne,
+  pushOne,
+  pullOne,
 } from "../../services/database/index";
-import logger from "../../utils/logger";
 import { ObjectId } from "mongodb";
-import { Address, TutorDTO } from './tutor.types';
+import { Address, TutorDTO } from "./tutor.types";
 
 const COLLECTION = "tutors";
 
@@ -17,9 +18,11 @@ export async function list(): Promise<TutorDTO[]> {
     const response = await selectAll<TutorDTO>(COLLECTION, {});
     return response;
   } catch (error) {
-    logger.error(error);
+    throw {
+      message: "error while trying to return all tutors",
+      error,
+    };
   }
-  return [];
 }
 
 export async function listLimit(
@@ -27,17 +30,15 @@ export async function listLimit(
   limit: number
 ): Promise<TutorDTO[]> {
   try {
-    const response = await selectWithLimit<TutorDTO>(
-      COLLECTION,
-      query,
-      limit
-    );
+    const response = await selectWithLimit<TutorDTO>(COLLECTION, query, limit);
 
     return response;
   } catch (error) {
-    logger.error("Error getting all tutors", error);
+    throw {
+      message: "error while trying to return tutors",
+      error,
+    };
   }
-  return [];
 }
 
 export async function read(id: string): Promise<TutorDTO | null> {
@@ -46,35 +47,8 @@ export async function read(id: string): Promise<TutorDTO | null> {
 
     return response;
   } catch (error) {
-    logger.error("Error getting tutor by id", error);
-  }
-  return null;
-}
-
-export async function readByForeignId(
-  field: string,
-  id: string,
-  limit: number
-): Promise<TutorDTO[]> {
-  try {
-    let data: { [key: string]: ObjectId } = {};
-    data[field] = new ObjectId(id);
-
-    const response = await selectWithLimit<TutorDTO>(
-      COLLECTION,
-      data,
-      limit
-    );
-
-    return response;
-  } catch (error) {
-    if (error instanceof Error && error.stack) {
-      for (const property of Object.getOwnPropertyNames(error)) {
-      }
-    }
-    logger.error("Error getting tutor by id", error);
     throw {
-      message: "Error getting tutor by id",
+      message: "error while trying to return all tutors",
       error,
     };
   }
@@ -89,26 +63,23 @@ export async function readByField(
     let query: { [key: string]: string | number | boolean } = {};
     query[field] = data;
 
-    const response = await selectWithLimit<TutorDTO>(
-      COLLECTION,
-      query,
-      limit
-    );
+    const response = await selectWithLimit<TutorDTO>(COLLECTION, query, limit);
 
     return response;
   } catch (error) {
-    logger.error("Error getting tutor by field", error);
+    throw {
+      message: "Error getting tutor by field",
+      params: { field, data, limit },
+      error,
+    };
   }
-  return [];
 }
 
 export async function store(data: {
-  id: string;
   name: string;
   documentNumber: string;
   phoneNumber: string;
-  observation:string;
-  patientsName: Array<string>;
+  observation: string;
   address: Address;
 }): Promise<string | null> {
   try {
@@ -117,55 +88,94 @@ export async function store(data: {
       documentNumber: data.documentNumber,
       phoneNumber: data.phoneNumber,
       observation: data.observation,
-      patientsName: data.patientsName,
       address: data.address,
-      createdAt: new Date()
+      createdAt: new Date(),
     });
 
-    return response
+    return response;
   } catch (error) {
-    logger.error("error creating tutor", error)
+    throw {
+      message: "error getting patient by field",
+      data,
+      error,
+    };
   }
-  return null;
 }
 
-
-export async function update (data: {
+export async function update(data: {
   id: string;
   name: string;
   documentNumber: string;
   phoneNumber: string;
-  observation:string;
-  patientsName: Array<string>;
+  observation: string;
   address: Address;
 }): Promise<boolean> {
   try {
-    const response = await updateOne(COLLECTION, {_id: new ObjectId(data.id)}, {
-      name: data.name,
-      documentNumber: data.documentNumber,
-      phoneNumber: data.phoneNumber,
-      observation: data.observation,
-      patientsName: data.patientsName,
-      address: data.address,
-      updatedAt: new Date()
-    })
+    const response = await updateOne(
+      COLLECTION,
+      { _id: new ObjectId(data.id) },
+      {
+        name: data.name,
+        documentNumber: data.documentNumber,
+        phoneNumber: data.phoneNumber,
+        observation: data.observation,
+        address: data.address,
+        updatedAt: new Date(),
+      }
+    );
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('error updating tutor', error)
+    throw {
+      message: "error at update tutor",
+      error,
+      data,
+    };
   }
-
-  return false
 }
 
-export async function remove (data: {id: string}): Promise<boolean> {
+export async function updatePatientArray(
+  id: string,
+  patientId: string,
+  operation: string
+): Promise<boolean> {
   try {
-    const response = await removeOne(COLLECTION, {_id: new ObjectId(data.id)})
-
-    return response
+    if (operation === "pull") {
+      const response = await pullOne(
+        COLLECTION,
+        { _id: new ObjectId(id) },
+        { patientsName: patientId },
+        { updatedAt: new Date() }
+      );
+      return response;
+    } else {
+      const response = await pushOne(
+        COLLECTION,
+        { _id: new ObjectId(id) },
+        { patientsName: patientId },
+        { updatedAt: new Date() }
+      );
+      return response;
+    }
   } catch (error) {
-    logger.error('Error removing tutor', error)
+    throw {
+      message: "error updating patient array",
+      data: { id, patientId, operation },
+      error,
+    };
   }
+}
 
-  return false
+export async function remove(id: string): Promise<boolean> {
+  try {
+    const response = await removeOne(COLLECTION, { _id: new ObjectId(id) });
+
+    return response;
+  } catch (error) {
+    throw {
+      message: "Error removing tutor",
+      error,
+      id,
+    };
+  }
 }
