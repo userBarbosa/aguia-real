@@ -24,6 +24,7 @@ jobs:
         run: |
           npm install
           npm run build
+          cp Dockerfile ./dist
    
       - name: Publishing on EC2
         run: |
@@ -35,7 +36,6 @@ jobs:
           mkdir -p ~/.ssh && echo "Host *" > ~/.ssh/config && echo " StrictHostKeyChecking no" >> ~/.ssh/config
           
           cd dist
-          cp ../Dockerfile ./
 
           scp -r ./* ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com:/var/www/api
           
