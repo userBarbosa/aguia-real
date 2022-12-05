@@ -34,7 +34,10 @@ jobs:
 
           mkdir -p ~/.ssh && echo "Host *" > ~/.ssh/config && echo " StrictHostKeyChecking no" >> ~/.ssh/config
 
-          scp -r -i ./key.pem ./* ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com:/var/www/api
+          scp -r \
+            -i ./key.pem \
+            ./dist ./Dockerfile ./package.json ./package-lock.json \
+            ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com:/var/www/api
           
           docker image build \
             -t aguia-real \
