@@ -16,6 +16,7 @@ jobs:
       CI: false
       DOT_ENV: ${{ secrets.DOT_ENV }}
       PRIVATE_KEY: ${{ secrets.SSH_PROD_PRIVATE_KEY }}
+      SERVER_ADDRESS: ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com
 
     steps:
       - uses: actions/checkout@v2
@@ -39,10 +40,17 @@ jobs:
           scp -r \
             -i ./key.pem \
             ./dist ./Dockerfile ./package.json ./package-lock.json ./.env \
-            ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com:/var/www/api
+            $SERVER_ADDRESS:/var/www/api
+            
+          ssh -i ./key.pem $SERVER_ADDRESS
 
-          docker image build \
-            -t aguia-real \
-            -f Dockerfile .
+            docker image build \
+              -t aguia-real \
+              -f Dockerfile .
+            
+            echo "docker image successfully build"
 
-          docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
+            docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
+            exit
+          
+          echo "eagle is flying"
