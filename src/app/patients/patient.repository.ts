@@ -104,6 +104,27 @@ export async function readByField(
   }
 }
 
+export async function readNames(ids: Array<string>): Promise<Array<string>> {
+  try {
+    let inQuery: Array<ObjectId> = [];
+    ids.map((id) => {
+      inQuery.push(new ObjectId(id));
+    });
+    const query = { _id: { $in: inQuery } };
+    const response = await selectWithLimit<PatientDTO>(COLLECTION, query, 50);
+    const names = response.map((patient) => {
+      return patient.name;
+    });
+    return names;
+  } catch (error) {
+    throw {
+      message: "Error getting patient by field",
+      params: { ids },
+      error,
+    };
+  }
+}
+
 export async function store(data: {
   tutorId: string;
   name: string;

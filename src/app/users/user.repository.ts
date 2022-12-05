@@ -100,7 +100,7 @@ export async function store(data: {
   birthDate?: Date;
 }): Promise<string | null> {
   try {
-    const id = await insertOne(COLLECTION, {
+    const cleanedUserObject = removingNullValues({
       name: data.name,
       email: data.email,
       emailConfirmed: data.emailConfirmed,
@@ -112,7 +112,10 @@ export async function store(data: {
       documentNumber: data.documentNumber,
       medicalLicense: data.medicalLicense,
       specialty: data.specialty,
-      birthDate: data.birthDate,
+      birthDate: data.birthDate
+    });
+    const id = await insertOne(COLLECTION, {
+      ...cleanedUserObject
     });
 
     return id;

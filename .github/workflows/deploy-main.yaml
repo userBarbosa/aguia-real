@@ -43,4 +43,4 @@ jobs:
             -t aguia-real \
             -f Dockerfile .
           
-          docker run -d -p 49160:3001 aguia-real:latest
+          docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
