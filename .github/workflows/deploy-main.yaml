@@ -3,8 +3,8 @@ name: Deploy Production Version
 on:
   pull_request_target:
     types:
-    - closed
-    branches: 
+      - closed
+    branches:
       - main
 
 jobs:
@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: false
-      DOCKER_USER: ${{ secrets.DOCKER_HUB_USER }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      DOT_ENV: ${{ secrets.DOTENV }}
+      PRIVATE_KEY: ${{ secrets.SSH_PROD_PRIVATE_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -24,23 +24,25 @@ jobs:
         run: |
           npm install
           npm run build
-   
+
       - name: Publishing on EC2
         run: |
-          echo "${{ secrets.SSH_PROD_PRIVATE_KEY }}" > ./key.pem
+          echo "${{ PRIVATE_KEY }}" > ./key.pem
           chmod 400 ./key.pem
           eval $(ssh-agent)
           ssh-add -k ./key.pem
 
           mkdir -p ~/.ssh && echo "Host *" > ~/.ssh/config && echo " StrictHostKeyChecking no" >> ~/.ssh/config
 
+          echo "${{ DOT_ENV }}" > .env
+
           scp -r \
             -i ./key.pem \
-            ./dist ./Dockerfile ./package.json ./package-lock.json \
+            ./dist ./Dockerfile ./package.json ./package-lock.json ./.env \
             ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com:/var/www/api
-          
+
           docker image build \
             -t aguia-real \
             -f Dockerfile .
-          
+
           docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
