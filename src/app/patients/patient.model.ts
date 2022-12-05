@@ -9,6 +9,7 @@ import {
   read,
   readByField,
   readByForeignId,
+  readNames,
   remove,
   store,
   update,
@@ -186,6 +187,28 @@ export async function deletePatient(
       };
     }
     return true;
+  } catch (error) {
+    log.error("error while removing patient", error);
+    throw error;
+  }
+}
+
+export async function translatePatientNames(
+  tutorId: string,
+  patientsNames?: Array<string>
+): Promise<Array<string>> {
+  const log = logger.child({
+    func: "deletePatient",
+    data: {tutorId, patientsNames},
+  });
+  try {
+    if (!patientsNames || patientsNames.length === 0) {
+      const tutor = await getTutorById(tutorId);
+      patientsNames = tutor?.patientsName || [];
+    }
+
+    const response = await readNames(patientsNames);
+    return response;
   } catch (error) {
     log.error("error while removing patient", error);
     throw error;

@@ -180,8 +180,13 @@ export async function getUserToken(
 export async function createUser(data: {
   name: string;
   email: string;
-  password: string;
   type: UserType;
+  password?: string;
+  phoneNumber?: string;
+  documentNumber?: string;
+  medicalLicense?: string;
+  specialty?: Specialty;
+  birthDate?: Date;
 }): Promise<string | null> {
   const log = logger.child({
     func: "createUser",
@@ -194,7 +199,7 @@ export async function createUser(data: {
     if (existingUser) {
       return "existing";
     } else {
-      const password = await createHash(data.password);
+      const password = data.password ? await createHash(data.password) : await createHash("Mudar@123");
       const response = await store({ ...data, password });
 
       return response;

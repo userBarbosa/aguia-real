@@ -7,6 +7,7 @@ WORKDIR /usr/src
 
 COPY ./package.json /usr/src/
 COPY ./package-lock.json /usr/src/
+COPY ./.env /usr/src/
 COPY ./dist /usr/src/dist
 
 RUN npm install
