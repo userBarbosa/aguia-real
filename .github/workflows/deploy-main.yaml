@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: false
-      DOT_ENV: ${{ secrets.DOTENV }}
+      DOT_ENV: ${{ secrets.DOT_ENV }}
       PRIVATE_KEY: ${{ secrets.SSH_PROD_PRIVATE_KEY }}
 
     steps:
@@ -27,14 +27,14 @@ jobs:
 
       - name: Publishing on EC2
         run: |
-          echo "${{ PRIVATE_KEY }}" > ./key.pem
+          echo "$PRIVATE_KEY" > ./key.pem
           chmod 400 ./key.pem
           eval $(ssh-agent)
           ssh-add -k ./key.pem
 
           mkdir -p ~/.ssh && echo "Host *" > ~/.ssh/config && echo " StrictHostKeyChecking no" >> ~/.ssh/config
 
-          echo "${{ DOT_ENV }}" > .env
+          echo "$DOT_ENV" > ./.env
 
           scp -r \
             -i ./key.pem \
