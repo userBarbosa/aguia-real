@@ -16,7 +16,7 @@ jobs:
       CI: false
       DOT_ENV: ${{ secrets.DOT_ENV }}
       PRIVATE_KEY: ${{ secrets.SSH_PROD_PRIVATE_KEY }}
-      SERVER_ADDRESS: ubuntu@ec2-15-229-88-93.sa-east-1.compute.amazonaws.com
+      SERVER_ADDRESS: ec2-15-229-88-93.sa-east-1.compute.amazonaws.com
 
     steps:
       - uses: actions/checkout@v2
@@ -28,6 +28,8 @@ jobs:
 
       - name: Publishing on EC2
         run: |
+          export DOCKER_HOST="ssh://ubuntu@$SERVER_ADDRESS"
+
           echo "$PRIVATE_KEY" > ./key.pem
           chmod 400 ./key.pem
           eval $(ssh-agent)
@@ -40,17 +42,19 @@ jobs:
           scp -r \
             -i ./key.pem \
             ./dist ./Dockerfile ./package.json ./package-lock.json ./.env \
-            $SERVER_ADDRESS:/var/www/api
-            
-          ssh -i ./key.pem $SERVER_ADDRESS
+            ubuntu@$SERVER_ADDRESS:/var/www/api
 
-            docker image build \
-              -t aguia-real \
-              -f Dockerfile .
-            
-            echo "docker image successfully build"
+          docker image build \
+            -t aguia-real \
+            -f Dockerfile .
 
-            docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
-            exit
-          
+          echo "docker image successfully build"
+
+          docker container stop aguia-real || echo "none container was stopped"
+          docker container rm aguia-real || echo "none container was removed"
+
+          docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
+
           echo "eagle is flying"
+
+          docker system prune -af
