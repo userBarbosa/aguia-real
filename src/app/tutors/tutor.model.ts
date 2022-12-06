@@ -64,6 +64,7 @@ export async function getTutorsByField(
 
 export async function createTutor(data: {
   name: string;
+  email: string;
   documentNumber: string;
   phoneNumber: string;
   observation: string;
@@ -87,6 +88,7 @@ export async function createTutor(data: {
 export async function updateTutor(data: {
   id: string;
   name: string;
+  email: string;
   documentNumber: string;
   phoneNumber: string;
   observation: string;
@@ -184,6 +186,7 @@ export async function insertPatientOnTutorArray(
 function makeTutorResponse(tutor: TutorDTO): Tutor {
   return {
     name: tutor.name,
+    email: tutor.email,
     documentNumber: tutor.documentNumber,
     phoneNumber: tutor.phoneNumber,
     observation: tutor.observation,

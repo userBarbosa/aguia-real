@@ -121,6 +121,7 @@ export async function readByField(
 
 export async function store(data: {
   name: string;
+  email: string;
   documentNumber: string;
   phoneNumber: string;
   observation: string;
@@ -129,6 +130,7 @@ export async function store(data: {
   try {
     const response = await insertOne(COLLECTION, {
       name: data.name,
+      email: data.email,
       documentNumber: data.documentNumber,
       phoneNumber: data.phoneNumber,
       observation: data.observation,
@@ -149,6 +151,7 @@ export async function store(data: {
 export async function update(data: {
   id: string;
   name: string;
+  email: string;
   documentNumber: string;
   phoneNumber: string;
   observation: string;
@@ -160,6 +163,7 @@ export async function update(data: {
       { _id: new ObjectId(data.id) },
       {
         name: data.name,
+        email: data.email,
         documentNumber: data.documentNumber,
         phoneNumber: data.phoneNumber,
         observation: data.observation,

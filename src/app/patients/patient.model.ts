@@ -100,6 +100,7 @@ export async function createPatient(data: {
   sex: Sex;
   birthDate: Date;
   onTreatment?: boolean;
+  weight: number;
 }): Promise<string | null> {
   const log = logger.child({
     func: "createPatient",
@@ -141,6 +142,7 @@ export async function updatePatient(data: {
   sex?: Sex;
   birthDate?: Date;
   onTreatment?: boolean;
+  weight: number;
 }): Promise<boolean> {
   const log = logger.child({
     func: "updatePatient",
@@ -227,6 +229,7 @@ function makePatientResponse(patient: PatientDTO): Patient {
     sex: patient.sex,
     birthDate: patient.birthDate,
     onTreatment: patient.onTreatment,
+    weight: patient.weight,
   };
 }
 
