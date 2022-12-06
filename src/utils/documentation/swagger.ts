@@ -23,9 +23,10 @@ import {
 const documentation = {
   openapi: "3.0.0",
   info: {
-    title: "PetsAnatomy",
+    title: "PetsHealth",
     description: "",
     version: "0.0.1",
+    contact: "contato@petshealth.com.br",
   },
   schemes: ["https"],
   servers: [
@@ -55,6 +56,28 @@ const documentation = {
   securityDefinitions: {
     ...utilitiesSecurityDefinition,
   },
+  tags: [
+    {
+      name: "Users",
+      description: "Usuarios",
+    },
+    {
+      name: "Appointments",
+      description: "Agendamentos",
+    },
+    {
+      name: "Patients",
+      description: "Pacientes / Pets",
+    },
+    {
+      name: "Tutors",
+      description: "Tutores / Clientes",
+    },
+    {
+      name: "Utilities",
+      description: "Utilidades",
+    },
+  ],
 };
 
 export default documentation;

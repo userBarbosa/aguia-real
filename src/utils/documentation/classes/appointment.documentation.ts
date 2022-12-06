@@ -41,6 +41,8 @@ const swaggerInsertAppointment = {
 };
 
 const swaggerGetAllAppointments = {
+  consumes: ["application/json"],
+  produces: ["application/json"],
   tags: ["Appointments"],
   summary: "Get all appointments",
   operationId: "getAllAppointments",
