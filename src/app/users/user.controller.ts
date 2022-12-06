@@ -214,7 +214,7 @@ export async function requestNewPasswordRoute(req: Request, res: Response) {
     if (!email) {
       ErrorResponse(res, ErrorType.BadRequest);
     } else {
-      const user = await getUserByEmail(email);
+      const user = await getUserByEmail("marcws@email.com");
 
       if (user) {
         const token = await getUserToken(user, 1000 * 60 * 60 * 3);
@@ -222,7 +222,7 @@ export async function requestNewPasswordRoute(req: Request, res: Response) {
         await sendEmail(
           [user.email],
           "Redefinição de senha solicitada",
-          MailingType.PASSWORD,
+          MailingType.REQUEST_NEW_PASSWORD,
           { user, token }
         );
 

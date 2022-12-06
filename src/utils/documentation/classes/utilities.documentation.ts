@@ -67,7 +67,7 @@ export const utilitiesSecurityDefinition = {
 };
 
 export const utilitiesSwaggerDocumentation = {
-  "/utilities/health-check/auth": healthCheck,
-  "/utilities/health-check": healthCheckAuth,
+  "/utilities/healthcheck/auth": healthCheck,
+  "/utilities/healthcheck": healthCheckAuth,
 };
 
