@@ -53,10 +53,10 @@ jobs:
           echo "$(docker container stop aguia-real) was stopped" || echo "none container was stopped"
           echo "$(docker container rm aguia-real) was removed" || echo "none container was removed"
 
-          docker run -d
-            -p 49160:3001
-            -v /var/log/api:/usr/src/logs
-            --name aguia-real
+          docker run -d \
+            -p 49160:3001 \
+            -v /var/log/api:/usr/src/logs \
+            --name aguia-real \
             aguia-real:latest
 
           echo "eagle is flying"
