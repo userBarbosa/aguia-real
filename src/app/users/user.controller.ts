@@ -149,7 +149,17 @@ export async function signinUserRoute(req: Request, res: Response) {
 export async function createUserRoute(req: Request, res: Response) {
   const log = logger.child({ func: "createUserRoute - controller" });
   try {
-    const { name, email, password, type } = req.body;
+    const {
+      name,
+      email,
+      password,
+      type,
+      phoneNumber,
+      documentNumber,
+      medicalLicense,
+      specialty,
+      birthDate,
+    } = req.body;
 
     if (!name || !email || !password || !type) {
       ErrorResponse(res, ErrorType.BadRequest);
@@ -159,10 +169,30 @@ export async function createUserRoute(req: Request, res: Response) {
         email,
         password,
         type,
+        phoneNumber,
+        documentNumber,
+        medicalLicense,
+        specialty,
+        birthDate,
       });
 
       if (id) {
         if (id !== "existing") {
+          const token = await getUserToken(
+            { id, name, email, type },
+            1000 * 60 * 60 * 3
+          );
+
+          await sendEmail(
+            [email],
+            "Confirme seu e-mail - PetsHealth",
+            MailingType.CONFIRM_EMAIL,
+            {
+              user: { name, email },
+              token,
+            }
+          );
+
           SuccessResponse(res, { id });
         } else {
           const error = { user: id };
@@ -214,14 +244,14 @@ export async function requestNewPasswordRoute(req: Request, res: Response) {
     if (!email) {
       ErrorResponse(res, ErrorType.BadRequest);
     } else {
-      const user = await getUserByEmail("marcws@email.com");
+      const user = await getUserByEmail(email);
 
       if (user) {
         const token = await getUserToken(user, 1000 * 60 * 60 * 3);
 
         await sendEmail(
           [user.email],
-          "Redefinição de senha solicitada",
+          "Redefinição de senha - Pets Health",
           MailingType.REQUEST_NEW_PASSWORD,
           { user, token }
         );

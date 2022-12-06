@@ -1,7 +1,8 @@
 import nodeMailer from './nodemailer';
 
 export enum MailingType {
-  REQUEST_NEW_PASSWORD = './src/services/mailing/templates/resetPassword.html'
+  REQUEST_NEW_PASSWORD = './src/services/mailing/templates/reset_password.html',
+  CONFIRM_EMAIL = './src/services/mailing/templates/confirm_email.html'
 }
 
 export async function sendEmail(
