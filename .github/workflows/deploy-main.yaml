@@ -50,10 +50,14 @@ jobs:
 
           echo "docker image successfully build"
 
-          docker container stop aguia-real || echo "none container was stopped"
-          docker container rm aguia-real || echo "none container was removed"
+          echo "$(docker container stop aguia-real) was stopped" || echo "none container was stopped"
+          echo "$(docker container rm aguia-real) was removed" || echo "none container was removed"
 
-          docker run -d -p 49160:3001 --name aguia-real aguia-real:latest
+          docker run -d \
+            -p 49160:3001 \
+            -v /var/log/api:/usr/src/logs \
+            --name aguia-real \
+            aguia-real:latest
 
           echo "eagle is flying"
 

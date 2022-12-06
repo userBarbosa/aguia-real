@@ -1,7 +1,22 @@
 import { createLogger, format, transports } from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
+
+const transport = new DailyRotateFile({
+  filename: "aguia-real-%DATE%.log",
+  dirname: "logs",
+  datePattern: "d",
+  maxSize: "20m",
+  maxFiles: "7d",
+});
+
+transport.on("rotate", function (oldFile, newFile) {
+  logger.info({
+    evaluation: "New file created!",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 const logger = createLogger({
-  level: "error",
   format: format.combine(
     format.timestamp({
       format: "YYYY-MM-DD HH:mm:ss",
@@ -13,15 +28,12 @@ const logger = createLogger({
     format.json()
   ),
   transports: [
-    new transports.Console({ level: "error" }),
+    transport,
+    new transports.Console(),
     new transports.File({
       filename: "aguia-real.err",
       dirname: "logs",
       level: "error",
-    }),
-    new transports.File({
-      filename: `aguia-real-${new Date().getDay()}.log`,
-      dirname: "logs",
     }),
   ],
 });

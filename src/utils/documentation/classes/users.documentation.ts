@@ -107,29 +107,67 @@ const createUserRoute = {
 };
 
 const signinUserRoute = {
+  consumes: ["application/json"],
+  produces: ["application/json"],
   tags: ["Users"],
-  summary: "",
-  operationId: "",
-  description: "",
-  parameters: [],
+  summary: "Login",
+  operationId: "signin",
+  description: "Login on application",
+  parameters: [
+    {
+      in: "body",
+      name: "body",
+      description: "Sign in object",
+      required: true,
+      schema: {
+        type: "object",
+        required: ["email", "password"],
+        properties: {
+          email: {
+            description: "User email",
+            type: "string",
+          },
+          password: {
+            description: "User password",
+            type: "string",
+          },
+        },
+      },
+    },
+  ],
   responses: {
     default: {
       description: "Default response.",
     },
   },
-  security: [
-    {
-      api_key: ["read:users"],
-    },
-  ],
+  security: [],
 };
 
 const requestNewPasswordRoute = {
+  consumes: ["application/json"],
+  produces: ["application/json"],
   tags: ["Users"],
-  summary: "",
-  operationId: "",
-  description: "",
-  parameters: [],
+  summary: "Request password redefinition email",
+  operationId: "requestNewPassword",
+  description: "Request the email for new password",
+  parameters: [
+    {
+      in: "body",
+      name: "body",
+      description: "Sign in object",
+      required: true,
+      schema: {
+        type: "object",
+        required: ["email"],
+        properties: {
+          email: {
+            description: "User email",
+            type: "string",
+          },
+        },
+      },
+    },
+  ],
   responses: {
     default: {
       description: "Default response.",
