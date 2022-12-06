@@ -57,6 +57,7 @@ jobs:
             -p 49160:3001 \
             -v /var/log/api:/usr/src/logs \
             --name aguia-real \
+            --add-host=mongoservice:172.17.0.1 \
             aguia-real:latest
 
           echo "eagle is flying"

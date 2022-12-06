@@ -2,6 +2,8 @@ import cors from 'cors';
 import express, { json, urlencoded } from 'express'
 import userRouter from '../../app/users/user.route';
 import appointmentRouter from '../../app/appointments/appointment.route';
+import patientRouter from '../../app/patients/patient.route';
+import tutorRouter from '../../app/tutors/tutor.route';
 import utilitiesRouter from '../../app/utilities/utility.route'
 import { environment } from '../../config/environment';
 import logger from '../logger';
@@ -21,6 +23,8 @@ export function startServer() {
   
   app.use('/', userRouter)
   app.use('/', appointmentRouter)
+  app.use('/', patientRouter)
+  app.use('/', tutorRouter)
   app.use('/', utilitiesRouter)
   
   app.listen(environment.PORT, () => logger.info(`Running on server via ${environment.PORT} port`));
