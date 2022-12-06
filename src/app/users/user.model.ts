@@ -186,7 +186,9 @@ export async function createUser(data: {
   documentNumber?: string;
   medicalLicense?: string;
   specialty?: Specialty;
+  active?: boolean;
   birthDate?: Date;
+  observation?: string;
 }): Promise<string | null> {
   const log = logger.child({
     func: "createUser",
@@ -214,11 +216,14 @@ export async function updateUser(data: {
   id: string;
   name?: string;
   email?: string;
+  type?: UserType;
   phoneNumber?: string;
   documentNumber?: string;
   medicalLicense?: string;
   specialty?: Specialty;
+  active?: boolean;
   birthDate?: Date;
+  observation?: string;
 }): Promise<boolean> {
   const log = logger.child({
     func: "updateUser",
@@ -311,6 +316,7 @@ function makeUserResponse(user: UserDTO): User {
     specialty: user.specialty,
     active: user.active,
     birthDate: user.birthDate,
+    observation: user.observation,
   };
 }
 

@@ -21,6 +21,7 @@ export type User = {
   active?: boolean,
   emailConfirmed?: Date,
   birthDate?: Date,
+  observation?: string;
 };
 
 export type UserDTO = {
@@ -35,6 +36,7 @@ export type UserDTO = {
   specialty: Specialty,
   active: boolean,
   birthDate: Date,
+  observation: string;
 } & GenericDTO
 
 export enum UserType {

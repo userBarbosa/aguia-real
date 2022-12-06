@@ -149,7 +149,7 @@ export async function signinUserRoute(req: Request, res: Response) {
 export async function createUserRoute(req: Request, res: Response) {
   const log = logger.child({ func: "createUserRoute - controller" });
   try {
-    const { name, email, password, type } = req.body;
+    const { name, email, password, type, phoneNumber, documentNumber, medicalLicense, specialty, active, birthDate, observation } = req.body;
 
     if (!name || !email || !password || !type) {
       ErrorResponse(res, ErrorType.BadRequest);
@@ -159,6 +159,13 @@ export async function createUserRoute(req: Request, res: Response) {
         email,
         password,
         type,
+        phoneNumber,
+        documentNumber,
+        medicalLicense,
+        specialty,
+        active,
+        birthDate,
+        observation
       });
 
       if (id) {
@@ -268,12 +275,23 @@ export async function updateUserRoute(req: Request, res: Response) {
 
   try {
     const { user, body } = req as RequestWithToken;
-    const { name } = body;
+    const { name, email, type, phoneNumber, documentNumber, medicalLicense, specialty, active, birthDate, observation } = body;
 
     if (!name) {
       ErrorResponse(res, ErrorType.BadRequest);
     } else {
-      const ok = await updateUser({ id: user.id, name });
+      const ok = await updateUser({ id: user.id, 
+        name,
+        email,
+        type,
+        phoneNumber,
+        documentNumber,
+        medicalLicense,
+        specialty,
+        active,
+        birthDate,
+        observation 
+      });
 
       if (ok) {
         SuccessResponse(res, true);

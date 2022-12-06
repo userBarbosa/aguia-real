@@ -97,7 +97,9 @@ export async function store(data: {
   documentNumber?: string;
   medicalLicense?: string;
   specialty?: Specialty;
+  active?: boolean;
   birthDate?: Date;
+  observation?: string;
 }): Promise<string | null> {
   try {
     const cleanedUserObject = removingNullValues({
@@ -112,7 +114,8 @@ export async function store(data: {
       documentNumber: data.documentNumber,
       medicalLicense: data.medicalLicense,
       specialty: data.specialty,
-      birthDate: data.birthDate
+      birthDate: data.birthDate,
+      observation: data.observation,
     });
     const id = await insertOne(COLLECTION, {
       ...cleanedUserObject
@@ -132,21 +135,27 @@ export async function update(data: {
   id: string;
   name?: string;
   email?: string;
+  type?: UserType;
   phoneNumber?: string;
   documentNumber?: string;
   medicalLicense?: string;
   specialty?: Specialty;
+  active?: boolean;
   birthDate?: Date;
+  observation?: string;
 }): Promise<boolean> {
   try {
     const cleanedUserObject = removingNullValues({
       name: data.name,
       email: data.email,
+      type: data.type,
       phoneNumber: data.phoneNumber,
       documentNumber: data.documentNumber,
       medicalLicense: data.medicalLicense,
+      active: data.active,
       specialty: data.specialty,
       birthDate: data.birthDate,
+      observation: data.observation,
     });
     const response = await updateOne(
       COLLECTION,
