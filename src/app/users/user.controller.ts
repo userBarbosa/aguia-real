@@ -170,6 +170,21 @@ export async function createUserRoute(req: Request, res: Response) {
 
       if (id) {
         if (id !== "existing") {
+          const token = await getUserToken(
+            { id, name, email, type },
+            1000 * 60 * 60 * 3
+          );
+
+          await sendEmail(
+            [email],
+            "Confirme seu e-mail - PetsHealth",
+            MailingType.CONFIRM_EMAIL,
+            {
+              user: { name, email },
+              token,
+            }
+          );
+          
           SuccessResponse(res, { id });
         } else {
           const error = { user: id };
