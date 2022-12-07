@@ -236,6 +236,7 @@ export async function isReserved(
 
 function makeAppointmentResponse(appointment: AppointmentDTO): Appointment {
   return {
+    id: appointment._id,
     patientId: appointment.patientId,
     ownerId: appointment.ownerId,
     diagnostic: appointment.diagnostic,

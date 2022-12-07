@@ -136,7 +136,6 @@ export async function createAppointmentRoute(req: Request, res: Response) {
     if (
       !patientId ||
       !ownerId ||
-      !diagnostic ||
       !employeeId ||
       !appointmentState ||
       !paymentMethod ||

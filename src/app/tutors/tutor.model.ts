@@ -185,6 +185,7 @@ export async function insertPatientOnTutorArray(
 
 function makeTutorResponse(tutor: TutorDTO): Tutor {
   return {
+    id: tutor._id,
     name: tutor.name,
     email: tutor.email,
     documentNumber: tutor.documentNumber,

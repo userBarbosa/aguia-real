@@ -68,14 +68,7 @@ export async function listLimit(
 export async function read(id: string): Promise<TutorDTO | null> {
   try {
     const tutor = await selectById<TutorDTO>(COLLECTION, id);
-    if (tutor) {
-      const patientsNames = await translatePatientNames(
-        id,
-        tutor?.patientsName
-      );
-      tutor.patientsName = patientsNames;
-      return tutor;
-    }
+
     return tutor;
   } catch (error) {
     throw {
