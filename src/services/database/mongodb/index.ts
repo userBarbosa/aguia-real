@@ -26,6 +26,8 @@ export async function findAll<T extends Document>(
     return data;
   } catch (error) {
     logger.error("", error);
+  } finally {
+    mongoDbClient.close();
   }
 
   return [];
@@ -51,7 +53,9 @@ export async function findWithLimit<T extends Document>(
     return data;
   } catch (error) {
     logger.error("", error);
-  } 
+  } finally {
+    mongoDbClient.close();
+  }
 
   return [];
 }
@@ -72,6 +76,8 @@ export async function findOne<T>(
     return data;
   } catch (error) {
     logger.error("", error);
+  } finally {
+    mongoDbClient.close();
   }
 
   return null;
@@ -93,7 +99,9 @@ export async function insert(
     return data.insertedId.toString();
   } catch (error) {
     logger.error("", error);
-  } 
+  } finally {
+    mongoDbClient.close();
+  }
 
   return null;
 }
@@ -115,6 +123,8 @@ export async function update(
     return data.modifiedCount > 0;
   } catch (error) {
     logger.error("", error);
+  } finally {
+    mongoDbClient.close();
   }
 
   return false;
@@ -136,6 +146,8 @@ export async function remove(
     return data.deletedCount > 0;
   } catch (error) {
     logger.error("", error);
+  } finally {
+    mongoDbClient.close();
   }
 
   return false;
