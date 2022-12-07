@@ -80,7 +80,7 @@ export async function readByField(
     return response;
   } catch (error) {
     throw {
-      message: "Error getting user by field",
+      message: "error getting user by field",
       params: { field, data, limit },
       error,
     };
@@ -109,7 +109,7 @@ export async function store(data: {
       password: data.password,
       type: data.type,
       createdAt: new Date(),
-      active: true,
+      active: data.active,
       phoneNumber: data.phoneNumber,
       documentNumber: data.documentNumber,
       medicalLicense: data.medicalLicense,
