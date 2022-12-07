@@ -281,7 +281,8 @@ export async function updateUserPassword(
     data: { id },
   });
   try {
-    const ok = await updatePassword(id, password);
+    const hashedPassword = await createHash(password)
+    const ok = await updatePassword(id, hashedPassword);
     return ok;
   } catch (error) {
     log.error("error updating user password", error);
