@@ -32,7 +32,7 @@ userRouter.get(`${basePath}/`, validateTokenMiddleware, getAllUsersRoute);
 userRouter.post(`${basePath}/signup`, createUserRoute);
 userRouter.post(`${basePath}/signin`, signinUserRoute);
 userRouter.post(`${basePath}/requestnewpassword`, requestNewPasswordRoute);
-userRouter.post(`${basePath}/resetpassword`, resetPasswordRoute);
+userRouter.post(`${basePath}/resetpassword`, validateTokenMiddleware, resetPasswordRoute);
 // userRouter.post(`${basePath}/`, validateTokenMiddleware, createUserRoute);
 
 userRouter.patch(`${basePath}/:id/type`, validateTokenMiddleware, isAdmin, updateUserTypeRoute);

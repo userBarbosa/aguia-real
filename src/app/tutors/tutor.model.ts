@@ -9,6 +9,7 @@ import {
   updatePatientArray,
 } from "./tutor.repository";
 import { Tutor, TutorDTO, Address } from "./tutor.types";
+import { translatePatientNames } from "../patients/patient.model";
 
 export async function getTutorById(id: string): Promise<Tutor | null> {
   const log = logger.child({
@@ -17,6 +18,15 @@ export async function getTutorById(id: string): Promise<Tutor | null> {
   });
   try {
     const tutor = await read(id);
+
+    if (tutor && tutor.patientsName) {
+      const patientsNames = await translatePatientNames(
+        id,
+        tutor.patientsName
+      );
+      tutor.patientsName = patientsNames;
+      return makeTutorResponse(tutor);
+    }
 
     if (tutor) {
       return makeTutorResponse(tutor);
@@ -51,7 +61,6 @@ export async function getTutorsByField(
   });
   try {
     const tutors = await readByField(data, field, 50);
-
     if (tutors) {
       return makeTutorListResponse(tutors);
     }

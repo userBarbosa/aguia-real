@@ -10,25 +10,12 @@ import {
 } from "../../services/database/index";
 import { ObjectId } from "mongodb";
 import { Address, TutorDTO } from "./tutor.types";
-import { translatePatientNames } from "../patients/patient.model";
 
 const COLLECTION = "tutors";
 
 export async function list(): Promise<TutorDTO[]> {
   try {
     const response = await selectAll<TutorDTO>(COLLECTION, {});
-    if (response && response.length > 0) {
-      let responseArray = [];
-      for (const tutor of response) {
-        const patientsNames = await translatePatientNames(
-          tutor.id,
-          tutor?.patientsName
-        );
-        tutor.patientsName = patientsNames;
-        responseArray.push(tutor);
-      }
-      return responseArray;
-    }
     return response;
   } catch (error) {
     throw {
@@ -44,18 +31,6 @@ export async function listLimit(
 ): Promise<TutorDTO[]> {
   try {
     const response = await selectWithLimit<TutorDTO>(COLLECTION, query, limit);
-    if (response && response.length > 0) {
-      let responseArray = [];
-      for (const tutor of response) {
-        const patientsNames = await translatePatientNames(
-          tutor.id,
-          tutor?.patientsName
-        );
-        tutor.patientsName = patientsNames;
-        responseArray.push(tutor);
-      }
-      return responseArray;
-    }
     return response;
   } catch (error) {
     throw {
@@ -68,7 +43,6 @@ export async function listLimit(
 export async function read(id: string): Promise<TutorDTO | null> {
   try {
     const tutor = await selectById<TutorDTO>(COLLECTION, id);
-
     return tutor;
   } catch (error) {
     throw {
@@ -88,20 +62,6 @@ export async function readByField(
     query[field] = data;
 
     const response = await selectWithLimit<TutorDTO>(COLLECTION, query, limit);
-
-    if (response && response.length > 0) {
-      let responseArray = [];
-      for (const tutor of response) {
-        const patientsNames = await translatePatientNames(
-          tutor.id,
-          tutor?.patientsName
-        );
-        tutor.patientsName = patientsNames;
-        responseArray.push(tutor);
-      }
-      return responseArray;
-    }
-
     return response;
   } catch (error) {
     throw {
