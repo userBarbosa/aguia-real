@@ -159,9 +159,11 @@ export async function createUserRoute(req: Request, res: Response) {
       medicalLicense,
       specialty,
       birthDate,
+      active,
+      observation
     } = req.body;
 
-    if (!name || !email || !password || !type) {
+    if (!name || !email || !type) {
       ErrorResponse(res, ErrorType.BadRequest);
     } else {
       const id = await createUser({
@@ -173,7 +175,9 @@ export async function createUserRoute(req: Request, res: Response) {
         documentNumber,
         medicalLicense,
         specialty,
+        active,
         birthDate,
+        observation
       });
 
       if (id) {

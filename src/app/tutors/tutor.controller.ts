@@ -18,6 +18,7 @@ import {
 } from "./tutor.model";
 
 export async function getTutorByIdRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { id } = req.params;
 
@@ -29,29 +30,33 @@ export async function getTutorByIdRoute(req: Request, res: Response) {
       if (tutor) {
         SuccessResponse(res, tutor);
       } else {
+        log.error("error getting tutor", { data: { id } });
         ErrorResponse(res, ErrorType.NotFound, {
           message: "Tutor não encontrado",
         });
       }
     }
   } catch (error) {
-    logger.error("Error getting an tutor", error);
+    log.error("error getting an tutor", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function getAllTutorsRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
+
   try {
     const limit = req.query ? Number(req.query.limit) : 50;
     const list = await getAllTutors({}, limit);
     SuccessResponse(res, list);
   } catch (error) {
-    logger.error("Error getting tutor list", error);
+    log.error("error getting tutor list", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function getTutorsByFieldRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     let { data, field } = req.query;
 
@@ -68,18 +73,20 @@ export async function getTutorsByFieldRoute(req: Request, res: Response) {
       if (tutor) {
         SuccessResponse(res, tutor);
       } else {
+        log.error("error getting an tutor", { data: { data, field } });
         ErrorResponse(res, ErrorType.NotFound, {
           message: "Tutor não encontrado",
         });
       }
     }
   } catch (error) {
-    logger.error("Error getting an tutor", error);
+    log.error("error getting an tutor", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function createTutorRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { name, email, documentNumber, phoneNumber, observation, address } =
       req.body;
@@ -100,20 +107,22 @@ export async function createTutorRoute(req: Request, res: Response) {
           SuccessResponse(res, { id });
         } else {
           const error = { message: "already exists" };
-          logger.error("error creating an tutor", error);
+          log.error("error creating an tutor", error);
           ErrorResponse(res, ErrorType.Forbidden, error);
         }
       } else {
+        log.error("error creating an tutor", { data: { ...req.body } });
         ErrorResponse(res, ErrorType.InternalServerError);
       }
     }
   } catch (error) {
-    logger.error("error creating an tutor", error);
+    log.error("error creating an tutor", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function updateTutorRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { id } = req.params;
     const { name, email, documentNumber, phoneNumber, observation, address } =
@@ -134,6 +143,7 @@ export async function updateTutorRoute(req: Request, res: Response) {
       if (updated) {
         SuccessResponse(res, updated);
       } else {
+        log.error("error updating tutor", { data: { ...req.body, id } });
         ErrorResponse(res, ErrorType.InternalServerError, {
           message: "error updating tutor",
           id,
@@ -141,12 +151,13 @@ export async function updateTutorRoute(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error("error updating tutor", error);
+    log.error("error updating tutor", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function deleteTutorRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { id } = req.params;
     if (!id) {
@@ -156,6 +167,7 @@ export async function deleteTutorRoute(req: Request, res: Response) {
       if (deleted) {
         SuccessResponse(res, deleted);
       } else {
+        log.error("error deleting tutor", { data: { id } });
         ErrorResponse(res, ErrorType.InternalServerError, {
           message: "error deleting tutor",
           id,
@@ -163,12 +175,13 @@ export async function deleteTutorRoute(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error("error deleting tutor", error);
+    log.error("error deleting tutor", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function deletePatientFromTutor(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { id, patientId } = req.params;
     if (!id || !patientId) {
@@ -180,10 +193,13 @@ export async function deletePatientFromTutor(req: Request, res: Response) {
           SuccessResponse(res, ok);
         } else {
           const error = { message: "patient not found" };
-          logger.error("error trying removing patient from tutor array", error);
+          log.error("error trying removing patient from tutor array", error);
           ErrorResponse(res, ErrorType.Forbidden, error);
         }
       } else {
+        log.error("error trying removing patient from tutor array", {
+          data: { id, patientId },
+        });
         ErrorResponse(res, ErrorType.InternalServerError, {
           message: "error trying removing patient from tutor array",
           id,
@@ -192,12 +208,13 @@ export async function deletePatientFromTutor(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error("error trying removing patient from tutor array", error);
+    log.error("error trying removing patient from tutor array", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function insertPatientFromTutor(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { id, patientId } = req.params;
     if (!id || !patientId) {
@@ -207,6 +224,9 @@ export async function insertPatientFromTutor(req: Request, res: Response) {
       if (response) {
         SuccessResponse(res, response);
       } else {
+        log.error("error trying inserting patient on tutor array", {
+          data: { id, patientId },
+        });
         ErrorResponse(res, ErrorType.InternalServerError, {
           message: "error trying inserting patient on tutor array",
           id,
@@ -215,7 +235,7 @@ export async function insertPatientFromTutor(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error("error trying inserting patient on tutor array", error);
+    log.error("error trying inserting patient on tutor array", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }

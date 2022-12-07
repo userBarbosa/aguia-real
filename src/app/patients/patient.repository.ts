@@ -72,7 +72,7 @@ export async function readByForeignId(
     return response;
   } catch (error) {
     throw {
-      message: "Error getting patient by foreign id",
+      message: "error getting patient by foreign id",
       params: { field, id, limit },
       error,
     };
@@ -97,7 +97,7 @@ export async function readByField(
     return response;
   } catch (error) {
     throw {
-      message: "Error getting patient by field",
+      message: "error getting patient by field",
       params: { field, data, limit },
       error,
     };
@@ -118,7 +118,7 @@ export async function readNames(ids: Array<string>): Promise<Array<string>> {
     return names;
   } catch (error) {
     throw {
-      message: "Error getting patient by field",
+      message: "error getting patient by field",
       params: { ids },
       error,
     };
@@ -135,6 +135,7 @@ export async function store(data: {
   sex: Sex;
   birthDate: Date;
   onTreatment?: boolean;
+  weight: number;
 }): Promise<string | null> {
   try {
     const response = await insertOne(COLLECTION, {
@@ -147,6 +148,7 @@ export async function store(data: {
       sex: data.sex,
       birthDate: data.birthDate,
       onTreatment: data.onTreatment,
+      weight: data.weight,
       createdAt: new Date(),
     });
     return response;
@@ -169,6 +171,7 @@ export async function update(data: {
   sex?: Sex;
   birthDate?: Date;
   onTreatment?: boolean;
+  weight: number
 }): Promise<boolean> {
   try {
     const cleanedPatientObject = removingNullValues({
@@ -180,6 +183,7 @@ export async function update(data: {
       observation: data.observation,
       allergy: data.allergy,
       onTreatment: data.onTreatment,
+      weight: data.weight
     });
     const response = await updateOne(
       COLLECTION,

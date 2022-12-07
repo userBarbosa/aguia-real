@@ -87,7 +87,7 @@ export async function signinUser(
 
     return {} as SigninUserResponse;
   } catch (error) {
-    log.error("Error logging user", error);
+    log.error("error logging user", error);
     throw error;
   }
 }

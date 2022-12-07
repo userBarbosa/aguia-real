@@ -17,6 +17,7 @@ import {
 import { translateData } from "../utilities/utility.controller";
 
 export async function getPatientByIdRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getPatientByIdRoute - controller" });
   try {
     const { id } = req.params;
 
@@ -28,29 +29,32 @@ export async function getPatientByIdRoute(req: Request, res: Response) {
       if (patient) {
         SuccessResponse(res, patient);
       } else {
+        log.error("error getting an patient", { data: { id } });
         ErrorResponse(res, ErrorType.NotFound, {
           message: "Paciente não encontrado",
         });
       }
     }
   } catch (error) {
-    logger.error("Error getting an patient", error);
+    log.error("error getting an patient", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function getAllPatientsRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getAllPatientsRoute - controller" });
   try {
     const limit = req.query ? Number(req.query.limit) : 50;
     const list = await getAllPatients({}, limit);
     SuccessResponse(res, list);
   } catch (error) {
-    logger.error("Error getting patient list", error);
+    log.error("error getting patient list", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function getPatientsByFieldRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getPatientsByFieldRoute - controller" });
   try {
     let { data, field } = req.query;
 
@@ -67,18 +71,21 @@ export async function getPatientsByFieldRoute(req: Request, res: Response) {
       if (patient) {
         SuccessResponse(res, patient);
       } else {
+        log.error("error getting an patient", { data: { data, field } });
+
         ErrorResponse(res, ErrorType.NotFound, {
           message: "Agendamento não encontrado",
         });
       }
     }
   } catch (error) {
-    logger.error("Error getting an patient", error);
+    log.error("error getting an patient", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function getPatientsByTutorRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getPatientsByTutorRoute - controller" });
   try {
     const { id } = req.params;
 
@@ -90,18 +97,21 @@ export async function getPatientsByTutorRoute(req: Request, res: Response) {
       if (patient) {
         SuccessResponse(res, patient);
       } else {
+        log.error("error getting an patient", { data: { id } });
+
         ErrorResponse(res, ErrorType.NotFound, {
           message: "Paciente não encontrado",
         });
       }
     }
   } catch (error) {
-    logger.error("Error getting an patient", error);
+    log.error("error getting an patient", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function createPatientRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "createPatientRoute - controller" });
   try {
     const {
       tutorId,
@@ -137,20 +147,23 @@ export async function createPatientRoute(req: Request, res: Response) {
           SuccessResponse(res, { id });
         } else {
           const error = { message: "already exists" };
-          logger.error("error creating an patient", error);
+          log.error("error creating an patient", error);
           ErrorResponse(res, ErrorType.Forbidden, error);
         }
       } else {
+        log.error("error creating an patient", { data: { ...req.body } });
+
         ErrorResponse(res, ErrorType.InternalServerError);
       }
     }
   } catch (error) {
-    logger.error("error creating an patient", error);
+    log.error("error creating an patient", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function updatePatientRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "updatePatientRoute - controller" });
   try {
     const { id } = req.params;
     const {
@@ -182,11 +195,13 @@ export async function updatePatientRoute(req: Request, res: Response) {
         allergy,
         birthDate,
         onTreatment,
-        weight
+        weight,
       });
       if (updated) {
         SuccessResponse(res, updated);
       } else {
+        log.error("error updating an patient", { data: { ...req.body, id } });
+
         ErrorResponse(res, ErrorType.InternalServerError, {
           message: "error updating patient",
           patientId: id,
@@ -194,12 +209,13 @@ export async function updatePatientRoute(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error("error updating patient", error);
+    log.error("error updating patient", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }
 
 export async function deletePatientRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "deletePatientRoute - controller" });
   try {
     const { id, tutorId } = req.params;
     if (!id) {
@@ -209,6 +225,7 @@ export async function deletePatientRoute(req: Request, res: Response) {
       if (deleted) {
         SuccessResponse(res, deleted);
       } else {
+        log.error("error deleting patient", { data: { id, tutorId } });
         ErrorResponse(res, ErrorType.InternalServerError, {
           message: "error deleting patient",
           patientId: id,
@@ -216,7 +233,7 @@ export async function deletePatientRoute(req: Request, res: Response) {
       }
     }
   } catch (error) {
-    logger.error("error deleting patient", error);
+    log.error("error deleting patient", error);
     ErrorResponse(res, ErrorType.InternalServerError, {}, error as Error);
   }
 }

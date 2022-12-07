@@ -65,7 +65,7 @@ export async function readByField(
     return response;
   } catch (error) {
     throw {
-      message: "Error getting tutor by field",
+      message: "error getting tutor by field",
       params: { field, data, limit },
       error,
     };
@@ -174,7 +174,7 @@ export async function remove(id: string): Promise<boolean> {
     return response;
   } catch (error) {
     throw {
-      message: "Error removing tutor",
+      message: "error removing tutor",
       error,
       id,
     };
