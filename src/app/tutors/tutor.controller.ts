@@ -83,7 +83,7 @@ export async function createTutorRoute(req: Request, res: Response) {
   try {
     const { name, email, documentNumber, phoneNumber, observation, address } =
       req.body;
-    if (!name || !email || !documentNumber || !phoneNumber || !observation || !address) {
+    if (!name || !email || !documentNumber || !phoneNumber || !address) {
       ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
     } else {
       const id = await createTutor({
