@@ -18,6 +18,7 @@ import {
 } from "./tutor.model";
 
 export async function getTutorByIdRoute(req: Request, res: Response) {
+  const log = logger.child({ func: "getTutorByIdRoute - controller" });
   try {
     const { id } = req.params;
 
@@ -29,6 +30,7 @@ export async function getTutorByIdRoute(req: Request, res: Response) {
       if (tutor) {
         SuccessResponse(res, tutor);
       } else {
+        log.error("error getting tutor", { id });
         ErrorResponse(res, ErrorType.NotFound, {
           message: "Tutor não encontrado",
         });

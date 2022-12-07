@@ -135,6 +135,7 @@ export async function store(data: {
   sex: Sex;
   birthDate: Date;
   onTreatment?: boolean;
+  weight: number;
 }): Promise<string | null> {
   try {
     const response = await insertOne(COLLECTION, {
@@ -147,6 +148,7 @@ export async function store(data: {
       sex: data.sex,
       birthDate: data.birthDate,
       onTreatment: data.onTreatment,
+      weight: data.weight,
       createdAt: new Date(),
     });
     return response;
@@ -169,6 +171,7 @@ export async function update(data: {
   sex?: Sex;
   birthDate?: Date;
   onTreatment?: boolean;
+  weight: number;
 }): Promise<boolean> {
   try {
     const cleanedPatientObject = removingNullValues({
@@ -180,6 +183,7 @@ export async function update(data: {
       observation: data.observation,
       allergy: data.allergy,
       onTreatment: data.onTreatment,
+      weight: data.weight,
     });
     const response = await updateOne(
       COLLECTION,

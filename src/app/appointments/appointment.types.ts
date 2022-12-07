@@ -15,6 +15,7 @@ export type Appointment = {
 };
 
 export type AppointmentDTO = {
+  id: string;
   patientId: string;
   ownerId: string;
   diagnostic: Diagnostic;
