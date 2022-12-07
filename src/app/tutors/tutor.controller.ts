@@ -81,13 +81,14 @@ export async function getTutorsByFieldRoute(req: Request, res: Response) {
 
 export async function createTutorRoute(req: Request, res: Response) {
   try {
-    const { name, documentNumber, phoneNumber, observation, address } =
+    const { name, email, documentNumber, phoneNumber, observation, address } =
       req.body;
-    if (!name || !documentNumber || !phoneNumber || !observation || !address) {
+    if (!name || !email || !documentNumber || !phoneNumber || !observation || !address) {
       ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
     } else {
       const id = await createTutor({
         name,
+        email,
         documentNumber,
         phoneNumber,
         observation,
@@ -115,15 +116,16 @@ export async function createTutorRoute(req: Request, res: Response) {
 export async function updateTutorRoute(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { name, documentNumber, phoneNumber, observation, address } =
+    const { name, email, documentNumber, phoneNumber, observation, address } =
       req.body;
 
-    if (!id || !name || !documentNumber || !phoneNumber || !address) {
+    if (!id || !name || !email || !documentNumber || !phoneNumber || !address) {
       ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
     } else {
       const updated = await updateTutor({
         id,
         name,
+        email,
         documentNumber,
         phoneNumber,
         observation,

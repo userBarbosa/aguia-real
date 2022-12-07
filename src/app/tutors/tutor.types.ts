@@ -3,6 +3,7 @@ import { GenericDTO } from '../../services/database/mongodb/types'
 export type Tutor = {
     id?: string;
     name: string;
+    email: string;
     documentNumber: string;
     phoneNumber: string;
     observation?:string;
@@ -13,6 +14,7 @@ export type Tutor = {
 export type TutorDTO = {
     id: string;
     name: string;
+    email: string;
     documentNumber: string;
     phoneNumber: string;
     observation:string;
