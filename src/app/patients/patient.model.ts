@@ -219,7 +219,7 @@ export async function translatePatientNames(
 
 function makePatientResponse(patient: PatientDTO): Patient {
   return {
-    id: patient.id,
+    id: patient._id,
     tutorId: patient.tutorId,
     species: patient.species,
     name: patient.name,

@@ -298,12 +298,24 @@ export async function updateUserRoute(req: Request, res: Response) {
 
   try {
     const { user, body } = req as RequestWithToken;
-    const { name, email, type, phoneNumber, documentNumber, medicalLicense, specialty, active, birthDate, observation } = body;
+    const {
+      name,
+      email,
+      type,
+      phoneNumber,
+      documentNumber,
+      medicalLicense,
+      specialty,
+      active,
+      birthDate,
+      observation,
+    } = body;
 
     if (!name) {
       ErrorResponse(res, ErrorType.BadRequest);
     } else {
-      const ok = await updateUser({ id: user.id, 
+      const ok = await updateUser({
+        id: user.id,
         name,
         email,
         type,
@@ -313,7 +325,7 @@ export async function updateUserRoute(req: Request, res: Response) {
         specialty,
         active,
         birthDate,
-        observation 
+        observation,
       });
 
       if (ok) {
