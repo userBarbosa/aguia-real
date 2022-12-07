@@ -112,9 +112,10 @@ export async function createPatientRoute(req: Request, res: Response) {
       allergy,
       sex,
       onTreatment,
+      weight,
     } = req.body;
     let { birthDate } = req.body;
-    if (!tutorId || !name || !species || !sex || !birthDate) {
+    if (!tutorId || !name || !species || !sex || !birthDate || !weight) {
       ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
     } else {
       birthDate = new Date(birthDate);
@@ -128,6 +129,7 @@ export async function createPatientRoute(req: Request, res: Response) {
         sex,
         onTreatment,
         birthDate,
+        weight,
       });
 
       if (id) {
@@ -160,10 +162,11 @@ export async function updatePatientRoute(req: Request, res: Response) {
       observation,
       allergy,
       onTreatment,
+      weight,
     } = req.body;
     let { birthDate } = req.body;
 
-    if (!id || !tutorId || !name || !species || !sex || !birthDate) {
+    if (!id || !tutorId || !name || !species || !sex || !birthDate || !weight) {
       ErrorResponse(res, ErrorType.BadRequest, { error: "missing property" });
     } else {
       birthDate = new Date(birthDate);
@@ -179,6 +182,7 @@ export async function updatePatientRoute(req: Request, res: Response) {
         allergy,
         birthDate,
         onTreatment,
+        weight
       });
       if (updated) {
         SuccessResponse(res, updated);

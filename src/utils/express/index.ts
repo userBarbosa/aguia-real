@@ -22,9 +22,9 @@ export function startServer() {
   app.use(json())
   
   app.use('/', userRouter)
-  app.use('/', appointmentRouter)
+  app.use('/', tutorRouter)
   app.use('/', patientRouter)
-  app.use('/', tutorRouter)
+  app.use('/', appointmentRouter)
   app.use('/', utilitiesRouter)
   
   app.listen(environment.PORT, () => logger.info(`Running on server via ${environment.PORT} port`));

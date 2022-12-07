@@ -7,6 +7,7 @@
     "start": "node ./dist/server.js",
     "start:dev": "ts-node-dev ./src/server.ts",
     "swagger-autogen": "node ./src/utils/documentation/autogen.ts",
+    "copy-files": "rm ./dist/services/mailing/templates/* && mkdir -p ./dist/services/mailing/templates && cp ./src/services/mailing/templates/*.html ./dist/services/mailing/templates",
     "build": "tsc"
   },
   "author": "Marcos Barbosa <marcos.barbosa@fatec.sp.gov.br>",

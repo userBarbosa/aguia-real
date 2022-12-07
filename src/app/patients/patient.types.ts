@@ -11,6 +11,7 @@ export type Patient = {
     sex: Sex;
     birthDate: Date;
     onTreatment?: boolean;
+    weight: number;
 };
 
 export type PatientDTO = {
@@ -24,6 +25,7 @@ export type PatientDTO = {
     sex: Sex;
     birthDate: Date;
     onTreatment?: boolean;
+    weight: number;
 } & GenericDTO;
 
 export enum Species {
